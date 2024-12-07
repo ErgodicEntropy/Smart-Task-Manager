@@ -18,7 +18,45 @@ The system starts by estimating the energy required for a list of tasks and sele
 
 To get started with the project, follow these steps:
 
-1. Clone the repository:
+
+1. **Clone the repository**
    ```bash
    git clone https://github.com/yourusername/risk-neutral-task-manager.git
+
+2. **Login to Heroku**  
+   Open your terminal (in VSCode or any terminal) and log in to your Heroku account by running:
+   - `heroku login`  
+     This will open a browser window for authentication.
+
+3. **Add Changes to Git**  
+   Stage your changes for commit by running:
+   - `git add .`  
+     This will add all modified files to the staging area.
+
+4. **Commit Your Changes**  
+   Commit your changes with a descriptive message:
+   - `git commit -m "Your commit message"`
+
+5. **Create a New Heroku App**  
+   Create a new app on Heroku by running:
+   - `heroku create {name-of-your-app}`  
+     Replace `{name-of-your-app}` with your desired app name. It must be unique.
+
+6. **Verify Heroku Remote URL**  
+   Confirm that the Heroku remote repository is correctly set up:
+   - `git remote -v`  
+     This will display the remote URL for Heroku.
+
+7. **Push to Heroku**  
+   Push your code to Heroku to deploy your app:
+   - If you’re using the `main` branch:
+     - `git push heroku main`
+   - If you’re using the `master` branch:
+     - `git push heroku master`  
+     Heroku will build and deploy your app.
+
+8. **Open Your App**  
+   After the deployment process is complete, you can access your app in the browser:
+   - `heroku open`  
+     This will automatically open your deployed app in your default browser.
 
