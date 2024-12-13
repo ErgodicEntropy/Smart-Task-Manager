@@ -44,7 +44,7 @@ The smart task manager automates energy allocation strategies by aligning estima
 - **Risk-Neutral Decision Making**: Focus on guaranteed gains to exploit risk-aversion toward losses.
 
 ## Logical Architecture
-![Logical Architecture](diagrams/Logical%20Architecture%20(Level%201).jpeg)
+![Logical Architecture](diagrams/Logical%20Architecture.jpeg)
 ### Components Analysis:
 - **User**: anyone engaged in a multitude of tasks but lacks a good model of: his own energy level, energy allocation strategies, task requirements.
 - **Subjective Factors**: these are factors that inevitably emanates from the user.

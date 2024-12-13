@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block head %}
+
+
+{% endblock %}
+{% block body %}
+<div class="content">
+    <h1 style="text-align:center">Energy Estimation</h1>
+    <p>Let's evaluate your energy level</p>
+    
+    <!-- Energy Level Selection Form (Only if energy level is not set in session) -->
+    <form action="/energy" method="POST">
+        <label for="energylevel">What is your estimated energy level?</label>
+        <select id="energylevel" name="energy" required>
+            <option value="" disabled selected>Select energy level</option>
+            <option value="Extremely High">Extremely High</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+            <option value="Extremely Low">Extremely Low</option>
+        </select>
+        <br><br>
+        <input type="submit" value="Submit">    
+    </form>
+
+    <!-- Chat Conversation Form (to send user message) -->
+    <form action="/conversation" method="GET">
+        <input type="submit" value="Let's Chat!">
+    </form>
+
+</div>
+{% endblock %}
