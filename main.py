@@ -1,13 +1,12 @@
-
 import os
-import sys
-# from requests import request
-from flask import Flask, render_template, url_for, request, redirect, session, flash
+import sys 
+import json
+from flask import Flask, render_template, request, redirect, session, flash, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = 'Jesus_Is_Lord'  # Required for using sessions
+app.secret_key = ''  # Required for using sessions
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 X = os.getcwd()
@@ -29,17 +28,7 @@ class Todo(db.Model):
 class Energy(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     level = db.Column(db.String(200), nullable=False)
-    numeric_value = db.Column(db.Integer, nullable=False )
 
-    def energy_conversion(self):
-        ED = {
-            "Extremely High": 5,
-            "High": 4,
-            "Medium": 3,
-            "Low": 2,
-            "Extremely Low": 1
-        }
-        return ED.get(self.level, 0)
 
 # Create the database if it doesn't exist
 def create_db():
@@ -66,6 +55,10 @@ def index():
 
 
     tasks = Todo.query.order_by(Todo.date).all()
+    tasks_list = [task.content for task in tasks]
+    # session['tasks_list'] = json.dumps(tasks_list)
+    stringifiedtasklist = ', '.join(tasks_list)
+    session['tasks_list'] = stringifiedtasklist
     return render_template('index.html', tasks=tasks)
 
 @app.route('/finalize_tasks', methods=['POST'])
@@ -76,15 +69,12 @@ def finalize_tasks():
 def energy():
     if request.method == 'POST':
         energy_level = request.form['energy']
-        energy_instance = Energy(level=energy_level)
-        numeric_value = energy_instance.energy_conversion()
-        new_energy = Energy(level=energy_level, numeric_value=numeric_value)
+        new_energy = Energy(level=energy_level)
         try:
             db.session.add(new_energy)
             db.session.commit()
             session['energy_level'] = energy_level
-            session['numeric_energy_value'] = numeric_value  # Store numeric value in session for use in the app
-            flash(f'Energy level set to {energy_level} (numeric value: {numeric_value})', 'success')
+            flash(f'Energy level set to {energy_level}', 'success')
             # return redirect('/conversation')
         except:
             flash('There was an issue saving the energy level', 'error')
@@ -107,6 +97,18 @@ def get_numeric_energy_value():
     # energy = Energy.query.filter_by(level=session.get('energy_level')).order_by(Energy.id.desc()).first()
     
     return render_template('conversation.html', energy=energy, energy_messages=energy_messages)
+
+
+@app.route('/LLM', methods=['POST'])
+def LLM():
+    ## JSON
+    TLJ = session.get('tasks_list','[]')
+    TL = json.loads(TLJ)
+    
+    ## STRING
+    tasks_list = session.get('tasks_list', '')
+    
+    return render_template('notyet.html', TL=TL) #tasks_list = tasks_list
 
 # Delete task route
 @app.route('/delete/<int:id>')
@@ -140,5 +142,3 @@ if __name__ == '__main__':
 
 
 
-
-    

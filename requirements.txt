@@ -1,12 +1,8 @@
 flask
 flask-sqlalchemy
 gunicorn
-tiktoken==0.4.0
-openai==0.27.8
 langchain==0.0.247
 langchain-huggingfacehub
 langchain-community
-chromadb==0.4.3
 numpy
 matplotlib
-fpdf
