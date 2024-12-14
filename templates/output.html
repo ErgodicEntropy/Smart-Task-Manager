@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block head %}
+
+{% endblock %}
+{% block body %}
+<div class="content">
+    <h1 style="text-align:center">Optimal Task List</h1>
+    <p style="text-align:center">Here is your task list aligned with your energy level!</p>
+    
+    <table>
+        <tr>
+            <th>Task</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+        {% for task in tasks %}
+        <tr>
+            <td>{{ task.content }}</td>
+            <td>{{ task.date.date() }}</td>
+            <td>
+                <a href="/delete/{{ task.id }}">Delete</a><br>
+                <a href="/update/{{ task.id }}">Update</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
