@@ -16,7 +16,7 @@ EP = prompts.Energy_Prompt_Template
 TP = prompts.Task_Prompt_Template
 AP = prompts.Allocation_Prompt_Template
 OP = prompts.Output_Prompt_Template
-
+RP = prompts.Retain_Prompt_Template
 
 memory = ConversationBufferMemory(llm=llm,
     memory_key='chat_history', return_messages=True)
@@ -44,7 +44,15 @@ def run_energy_query(query: str): #query type: string
     memory.chat_memory.add_user_message(f"Energy Level Query: {query}")
     memory.chat_memory.add_ai_message(response)
     return response
-    
+
+# Run LLM Query for Summarizing/Infering user energy level    
+def retain_energy(message: str):
+    llmscaffold = llm.QueryRunner(modelname=model_name, maxtoken=maxtokens, temp=temperature)
+    llm_instance = llmscaffold.llm_def()
+    Retain_Agent = ConversationChain(llm=llm_instance, prompt= RP, memory=memory, verbose=True)
+    response = Retain_Agent.run({"input": message})
+    return response
+
 # Run LLM Query for Task Requirement Agent
 def run_task_query(query: str): #query type: list of strings or stringified list of strings
     llmscaffold = llm.QueryRunner(modelname=model_name, maxtoken=maxtokens, temp=temperature)

@@ -164,8 +164,8 @@ class Query(BaseModel):
             If parsing fails, it raises a ValueError.
             For unsupported types, it raises a TypeError.
             Converts the agent's response into a JSON object (dictionary).
-            Assumes the response is either a JSON string or a dictionary.
-        """
+            Assumes the response is either a JSON string or a dictionary."""
+        
         if isinstance(agent_response, dict):
             # Already a dictionary, return as-is
             return agent_response
@@ -195,50 +195,3 @@ class Query(BaseModel):
             for temp_file in temp_files:
                 if os.path.exists(temp_file):
                     os.unlink(temp_file)
-
-
-# Example Usage
-# query_instance = Query(name="Sample Query")
-# files = query_instance.save_query_and_result(query={"tasks": ["task1", "task2"]}, 
-#                                              prompt="Execute tasks: {tasks_list}", 
-#                                              result_str='{"result": "success"}')
-# print(files)
-
-
-# query_instance = Query(name="Sample Query")
-# files = query_instance.save_query_and_result(
-#     query={"tasks": ["task1", "task2"]},
-#     prompt="Execute tasks: {tasks_list}",
-#     result_str='{"result": "success"}'
-# )
-# print(files)
-# Output:
-# {
-#   'query_file': 'query_input_20241215_120000.json',
-#   'prompt_file': 'query_prompt_20241215_120000.txt',
-#   'result_file': 'query_result_20241215_120000.json'
-# }
-
-# response = {"text": {"result": "This is the result."}}
-# clean_result = Query.transform_resp(response)
-# print(clean_result)  # Output: "This is the result."
-
-# decoded_result = Query.json_decode('{"key": "value"}')
-# print(decoded_result)  # Output: {"key": "value"}
-
-
-
-    # # Initialize a Query instance
-    # query_instance = Query(name="Energy Query")
-    
-    # # Convert response to string
-    # try:
-    #     result_str = query_instance.transform_response_to_string(energy_resp)
-    # except Exception as e:
-    #     raise RuntimeError(f"Failed to process the LLM response as string: {e}")
-    
-    # # Optional: Convert to JSON if needed
-    # try:
-    #     result_json = query_instance.transform_response_to_json(energy_resp)
-    # except (ValueError, TypeError):
-    #     result_json = None  # Not JSON-compatible, keep as None

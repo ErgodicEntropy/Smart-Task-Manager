@@ -128,7 +128,8 @@ def energyfunc():
         session['userEnergyMessage'] = usermessage
         conversational_resp = agents.continue_conversation(usermessage)
         
-    session['updated_energy_level'] = usermessage
+    accurate_enegy_level = agents.retain_energy(usermessage)
+    session['updated_energy_level'] = accurate_enegy_level
     
     return render_template('energy_conversation.html', energy=energy, energy_resp=energy_resp, conversational_resp=conversational_resp)
 
