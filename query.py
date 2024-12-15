@@ -45,7 +45,7 @@ class Query(BaseModel):
         
         # Attempt JSON decoding
         try:
-            return json.loads(result_str) #this is a python dictionary
+            return json.loads(result_str.strip()) #this is a python dictionary
         except json.JSONDecodeError as e:
             raise ValueError(f"Failed to decode JSON: {e}")
 

@@ -157,10 +157,24 @@ For each task, please consider:
 
 Please sort the tasks in the following way:
 1. Start with the tasks that require the exact amount of energy level given to you, and explain why these tasks can be approached first.
-2. Then, move on to the tasks that require either less amount of energ level given to youy, explaining how they can be tackled after the energy-aligned tasks are completed.
+2. Then, move on to the tasks that require either less amount of energy, explaining how they can be tackled after the energy-aligned tasks are completed.
 3. Finally, include the hard tasks, requiring more amount of energy, describing how they should be approached once the user has used up their available energy for easier tasks.
 
-Your goal is to help the user feel confident in managing their energy throughout their tasks. Suggest how to prepare for each task, how to pace oneself, and offer any tips to keep energy levels in balance throughout the day. Be supportive and empathetic, understanding that energy levels vary from person to person, and that the user may need to adapt your advice to suit their unique situation.
+For each task, return it as a structured object with the following properties:
+- `content`: A short description of the task (e.g., "Make the bed", "Go for a walk").
+- `energy_required`: The energy level required for the task (e.g., "low", "moderate", "high").
+- `preparation`: A description of what preparation or pacing might be needed (e.g., "Take breaks", "Prepare a plan").
+- `task_type`: Mentally, physically, or both demanding (e.g., "Physical", "Mental", "Both").
+- `recommended_start_time`: A suggested time for the user to start the task (e.g., "Morning", "Afternoon").
+
+Ensure the output is in the following format:
+[
+    {"content": "Task description", "energy_required": "low", "preparation": "Take it easy", "task_type": "Physical", "recommended_start_time": "Morning"},
+    {"content": "Task description", "energy_required": "moderate", "preparation": "Prepare a plan", "task_type": "Mental", "recommended_start_time": "Afternoon"},
+    {"content": "Task description", "energy_required": "high", "preparation": "Take breaks", "task_type": "Both", "recommended_start_time": "Evening"}
+]
+
+This list should contain all the tasks sorted from the least to the most demanding, along with helpful advice for each task. You should describe how each task can be tackled based on its energy requirements.
 
 Here’s an example of how to approach this:
 
@@ -171,5 +185,5 @@ Please organize and describe the tasks accordingly, ensuring that your tone is u
 
 ---
 Your responses should be calm, non-judgmental, and helpful to the user, guiding them on how to best distribute their energy across tasks.
----    
+---
 """)

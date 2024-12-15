@@ -55,7 +55,7 @@ def index():
             return "There was an issue adding your task"
 
 
-    tasks = Todo.query.order_by(Todo.date).all()
+    tasks = Todo.query.order_by(Todo.date).all() # this is a Todo object (db.Model)
     tasks_list = [task.content for task in tasks] #this is a list of strings
     stringifiedtasklist = ', '.join(tasks_list) #this is a string containing a list of strings
     session['tasks_list'] = stringifiedtasklist
@@ -179,11 +179,27 @@ def task_output():
     context = query_instance.concatenate_inputs(energy_level, tasks_list_str)
 
     # Pass context to the query runner or agent
-    optimal_task_list = agents.run_output_query(context)
-    
+    optimal_task_list_str = agents.run_output_query(context)
+    # Assuming optimal_task_list is a string, you can split it into a list
+    # optimal_task_list = optimal_task_list_str.split(', ')  # Adjust based on the response format (e.g., comma-separated list)
+    # optimal_task_list = json.loads(optimal_task_list_str)
+    # optimal_task_list = query_instance.transform_response_to_json(optimal_task_list_str)
+    optimal_task_list = query_instance.json_decode(optimal_task_list_str)        
+    ###SORTING ALGORITHM
     return render_template('output.html', optimal_task_list=optimal_task_list)
 
 # Main route for file saving: JSON or string
+@app.route('/downloadtext', methods=['GET'])
+def download():
+    querry_instance = Query(name="data download")
+    
+    
+    
+@app.route('/downloadjson', methods=['GET'])
+def download():
+    querry_instance = Query(name="data download")
+    
+
 
 # Start the Flask app
 if __name__ == '__main__':

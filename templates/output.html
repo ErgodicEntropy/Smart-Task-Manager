@@ -1,28 +1,96 @@
 {% extends 'base.html' %}
-{% block head %}
 
+{% block head %}
+    <style>
+        .completed {
+            text-decoration: line-through;
+            background-color: #e0ffe0;
+            color: green;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .finish-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .finish-button:hover {
+            background-color: #45a049;
+        }
+
+        .task-row {
+            transition: background-color 0.3s ease;
+        }
+
+        .task-row.finished {
+            background-color: #e0ffe0;
+        }
+    </style>
 {% endblock %}
+
 {% block body %}
 <div class="content">
     <h1 style="text-align:center">Optimal Task List</h1>
     <p style="text-align:center">Here is your task list aligned with your energy level!</p>
     
     <table>
-        <tr>
-            <th>Task</th>
-            <th>Date</th>
-            <th>Action</th>
-        </tr>
-        {% for task in optimal_task_list %}
-        <tr>
-            <td>{{ task.content }}</td>
-            <td>{{ task.date.date() }}</td>
-            <td>
-                <a href="/delete/{{ task.id }}">Delete</a><br>
-                <a href="/update/{{ task.id }}">Update</a>
-            </td>
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr>
+                <th>Task</th>
+                <th>Energy Level</th>
+                <th>Preparation</th>
+                <th>Task Type</th>
+                <th>Recommended Start Time</th>
+                <th>State</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in optimal_task_list %}
+                <tr class="task-row" id="task-{{ loop.index }}">
+                    <td class="{% if task.finished %}completed{% endif %}">{{ task.content }}</td>
+                    <td>{{ task.energy_required }}</td>
+                    <td>{{ task.preparation }}</td>
+                    <td>{{ task.task_type }}</td>
+                    <td>{{ task.recommended_start_time }}</td>
+                    <td>
+                        <a href="#" class="finish-button" onclick="markAsFinished({{ loop.index }})">Finish</a><br>
+                    </td>    
+                </tr>
+            {% endfor %}
+        </tbody>
     </table>
+
+    <!-- Chat Conversation Form (to send user message) -->
+    <form action="/downloadtext" method="GET">
+        <input type="submit" value="Download Data (Text)">
+    </form> 
+    <form action="/downloadjson" method="GET">
+        <input type="submit" value="Download Data (JSON)">
+    </form> 
 </div>
+
+<script>
+    function markAsFinished(taskId) {
+        // Find the task row by its ID
+        const taskRow = document.getElementById('task-' + taskId);
+        const taskContent = taskRow.querySelector('td');
+
+        // Mark the task as finished (adding the class and applying the effect)
+        taskRow.classList.add('finished');
+        taskContent.classList.add('completed');
+
+        // Optionally, change the button to reflect the completed state
+        const finishButton = taskRow.querySelector('.finish-button');
+        finishButton.innerHTML = 'Completed';
+        finishButton.style.backgroundColor = '#808080';
+        finishButton.style.cursor = 'not-allowed';
+    }
+</script>
+
 {% endblock %}
