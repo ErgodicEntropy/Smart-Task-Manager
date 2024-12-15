@@ -65,7 +65,7 @@ The smart task manager automates energy allocation strategies by aligning estima
       - ***Task***: Data containing Task Requirements Model and Task Priority
 - **System Output**: Energy-Priority Aligned Tasks i.e. tasks sorted accoridngly to the user's priority and his energy level.
 ## Physical Architecture
-![[Physical Architecture](diagrams/Physical%20Architecture.jpeg)
+![Physical Architecture](diagrams/Physical%20Architecture.jpeg)
 ### Components Analysis: 
 - **User**: anyone engaged in a multitude of tasks but lacks a good model of: his own energy level, energy allocation strategies, task requirements.
 - **User Data Submission**: the user submits his data composed of his estimated energy and a task list ordered by priority.
