@@ -13,9 +13,13 @@
         <div class="chatbox" style="height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; background-color: #fff; border-radius: 5px;">
             <!-- Static messages -->
             <div class="message bot-message" style="font-style: italic; color: #007bff; margin-bottom: 10px;">
-                Your current energy level is {{ energy }}.
-                <br><br>
-                {{energy_resp}} 
+                {% if not session.get('userEnergyMessage', False) %}
+                    Your current energy level is {{ energy }}.
+                    <br><br>
+                    {{energy_resp}}
+                {% else %}
+                    {{conversational_resp}}
+                {% endif %} 
             </div>    
         </div>
 

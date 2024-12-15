@@ -13,17 +13,21 @@
         <div class="chatbox" style="height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; background-color: #fff; border-radius: 5px;">
             <!-- Static messages -->
             <div class="message bot-message" style="font-style: italic; color: #007bff; margin-bottom: 10px;">
-                Your current energy level is {{ energy }}. 
+                {% if not session.get('userAllocationMessage', False) %}
+                    {{allocation_resp}}
+                {% else %}
+                    {{conversational_resp}}
+                {% endif %} 
             </div>    
         </div>
 
         <!-- Input field and send button -->
-        <!-- <div class="chat-input" style="display: flex; align-items: center;">
+        <div class="chat-input" style="display: flex; align-items: center;">
             <form action="/conversation" method="POST" style="width: 100%; display: flex; align-items: center;">
                 <input type="text" name="userMessage" placeholder="Type your message..." style="width: 80%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;"/>
                 <button type="submit" style="width: 20%; padding: 10px; border: none; background-color: #4CAF50; color: white; border-radius: 5px; cursor: pointer;">Send</button>
             </form>
-        </div> -->
+        </div>
 
         <!-- Chat Conversation Form (to send user message) -->
         <form action="/output" method="GET">

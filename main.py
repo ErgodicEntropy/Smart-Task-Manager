@@ -125,6 +125,7 @@ def energyfunc():
     
     usermessage = request.form['userMessage']
     if usermessage:
+        session['userEnergyMessage'] = usermessage
         conversational_resp = agents.continue_conversation(usermessage)
         
     session['updated_energy_level'] = usermessage
@@ -142,6 +143,7 @@ def taskfunc():
     task_resp = agents.run_task_query(tasks_list)
     usermessage = request.form['userMessage']
     if usermessage:
+        session['userTaskMessage'] = usermessage
         conversational_resp = agents.continue_conversation(usermessage)
 
     return render_template('taskreq_conversation.html', task_resp=task_resp, conversational_resp=conversational_resp)
@@ -155,6 +157,7 @@ def allocfunc():
     allocation_resp = agents.run_allocation_query(tasks_list)
     usermessage = request.form['userMessage']
     if usermessage:
+        session['userAllocationMessage'] = usermessage
         conversational_resp = agents.continue_conversation(usermessage)
 
     return render_template('allocation_conversation.html', allocation_resp=allocation_resp, conversational_resp=conversational_resp)

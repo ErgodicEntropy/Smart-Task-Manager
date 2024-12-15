@@ -35,7 +35,7 @@ def continue_conversation(user_message: str):
     return response
 
 # Run LLM Query for Energy Agent
-def run_energy_query(query): #query type: string
+def run_energy_query(query: str): #query type: string
     llmscaffold = llm.QueryRunner(modelname=model_name, maxtoken=maxtokens, temp=temperature)
     llm = llmscaffold.llm_def()
     Energy_Agent = LLMChain(llm=llm,prompt=EP, verbose=True)
@@ -46,7 +46,7 @@ def run_energy_query(query): #query type: string
     return response
     
 # Run LLM Query for Task Requirement Agent
-def run_task_query(query): #query type: list of strings or stringified list of strings
+def run_task_query(query: str): #query type: list of strings or stringified list of strings
     llmscaffold = llm.QueryRunner(modelname=model_name, maxtoken=maxtokens, temp=temperature)
     llm = llmscaffold.llm_def()
     Task_Agent = LLMChain(llm=llm,prompt=TP, verbose=True)
@@ -58,7 +58,7 @@ def run_task_query(query): #query type: list of strings or stringified list of s
 
 
 # Run LLM Query for Energy Allocation Agent
-def run_allocation_query(query): #query type: list of strings or stringified list of strings
+def run_allocation_query(query: str): #query type: list of strings or stringified list of strings
     llmscaffold = llm.QueryRunner(modelname=model_name, maxtoken=maxtokens, temp=temperature)
     llm = llmscaffold.llm_def()
     Allocation_Agent = LLMChain(llm=llm,prompt=AP, verbose=True)
@@ -69,7 +69,7 @@ def run_allocation_query(query): #query type: list of strings or stringified lis
     return response
 
 # Run LLM Query for Output Agent (Optimal Task List)
-def run_output_query(query): #query type: string + list of strings or stringified list of strings
+def run_output_query(query: str): #query type: string + list of strings or stringified list of strings
     llmscaffold = llm.QueryRunner(modelname=model_name, maxtoken=maxtokens, temp=temperature)
     llm = llmscaffold.llm_def()
     Output_Agent = LLMChain(llm=llm,prompt=AP, verbose=True)
