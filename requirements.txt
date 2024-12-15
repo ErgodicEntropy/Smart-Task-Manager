@@ -1,8 +1,9 @@
 flask
 flask-sqlalchemy
 gunicorn
-langchain==0.0.247
-langchain-huggingfacehub
+langchain==0.0.184
+langchain-huggingface
 langchain-community
+huggingface-hub==0.14.1
 numpy
 matplotlib

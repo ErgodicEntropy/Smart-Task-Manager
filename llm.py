@@ -1,9 +1,7 @@
 import config
 from langchain.llms import HuggingFaceHub
-from langchain.chains import LLMChain
-from langchain.memory import ConversationBufferMemory
 from langchain_huggingface import HuggingFaceEndpoint
-
+from langchain_community.llms import CTransformers
 
 
 # Default configurations
@@ -27,4 +25,14 @@ class QueryRunner:
         # repo_id="mistralai/Mistral-7B-Instruct-v0.2"
         # llm=HuggingFaceEndpoint(repo_id=repo_id,max_length=128,temperature=0.7,token=config.HUGGINGFACE_API_TOKEN)
         # llm.invoke("What is machine learning")
+        return llm
+    
+    def llm_transformer_def():
+        # Load the locally downloaded model here
+        llm = CTransformers(
+            model = "TheBloke/Llama-2-7B-Chat-GGML",
+            model_type="llama",
+            max_new_tokens = 512,
+            temperature = 0.5
+        )
         return llm

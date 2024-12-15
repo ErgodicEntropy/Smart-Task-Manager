@@ -13,7 +13,7 @@
             <th>Date</th>
             <th>Action</th>
         </tr>
-        {% for task in tasks %}
+        {% for task in optimal_task_list %}
         <tr>
             <td>{{ task.content }}</td>
             <td>{{ task.date.date() }}</td>
