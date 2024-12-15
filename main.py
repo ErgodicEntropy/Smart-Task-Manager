@@ -165,8 +165,8 @@ def allocfunc():
 @app.route('/output', methods=['GET'])
 def task_output():
     # Fetch data from session
-    energy_level = session.get('energy_level', "No energy level provided.")
-    tasks_list_str = session.get('tasks_list', "No tasks provided.")
+    energy_level = session.get('updated_energy_level', "No energy level provided.") #string
+    tasks_list_str = session.get('tasks_list', "No tasks provided.") # string containing a list of strings
     
     # Initialize the Query instance
     query_instance = Query(name="Task-Energy Output Management")
