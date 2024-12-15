@@ -162,7 +162,7 @@ Please sort the tasks in the following way:
 
 For each task, return it as a structured object with the following properties:
 - `content`: A short description of the task (e.g., "Make the bed", "Go for a walk").
-- `energy_required`: The energy level required for the task (e.g., "low", "moderate", "high").
+- `energy_required`: The energy level required for the task (e.g., "extremely low", "low", "moderate", "high", "extremely high").
 - `preparation`: A description of what preparation or pacing might be needed (e.g., "Take breaks", "Prepare a plan").
 - `task_type`: Mentally, physically, or both demanding (e.g., "Physical", "Mental", "Both").
 - `recommended_start_time`: A suggested time for the user to start the task (e.g., "Morning", "Afternoon").

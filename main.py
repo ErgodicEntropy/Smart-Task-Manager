@@ -1,3 +1,4 @@
+import numpy as np
 import os
 import agents
 from query import Query
@@ -56,8 +57,9 @@ def index():
 
 
     tasks = Todo.query.order_by(Todo.date).all() # this is a Todo object (db.Model)
-    tasks_list = [task.content for task in tasks] #this is a list of strings
+    tasks_list = [task.content for task in tasks] #this is a list of strings (tasks[0] is the earliest and the most prioritized)
     stringifiedtasklist = ', '.join(tasks_list) #this is a string containing a list of strings
+    # to converse back to task list: tasks_list = stringifiedtasklist.split(', ')
     session['tasks_list'] = stringifiedtasklist
     return render_template('index.html', tasks=tasks)
 
@@ -179,25 +181,47 @@ def task_output():
     context = query_instance.concatenate_inputs(energy_level, tasks_list_str)
 
     # Pass context to the query runner or agent
-    optimal_task_list_str = agents.run_output_query(context)
-    # Assuming optimal_task_list is a string, you can split it into a list
+    info_task_list_str = agents.run_output_query(context)
+    ### CONVERSION: String to a python dict or list
+    info_task_list = query_instance.json_decode(info_task_list_str)        
     # optimal_task_list = optimal_task_list_str.split(', ')  # Adjust based on the response format (e.g., comma-separated list)
     # optimal_task_list = json.loads(optimal_task_list_str)
     # optimal_task_list = query_instance.transform_response_to_json(optimal_task_list_str)
+    
+    ###SORTING ALGORITHM (better don't trust the fucking LLM in this) -> trade-off: the llm ouput should be as the dict keys otherwise errors
+
+    sortdict = {"extremely high":5, "high":4, "moderate":3, "low":2, "extremely low":1}
+    tasks = Todo.query.order_by(Todo.date).all() # this is a Todo object (db.Model) (tasks[0] is the earliest and the most prioritized)
+    tasks_list = [task.id for task in tasks] #this is a list of strings (tasks[0] is the earliest and the most prioritized)
+    N = len(tasks_list)
+    priority = [N-task.id for task in tasks]
+    energy_req = [ task['energy_required'] for task in info_task_list]
+    numerical_energy_req = [sortdick[energy_req[k]] for k in range(0,len(energy_req))]
+    value_list = [np.abs(priority[k]-numerical_energy_req[k]) for k in range(0,len(priority))]
+    
+    optimal_task_list =
+    
+    ### Stringify the optimal task list/dict back into a string
+    session['optimal_task_list'] = ', '.join(optimal_task_list) 
+    # Assuming optimal_task_list is a string, you can split it into a list
     optimal_task_list = query_instance.json_decode(optimal_task_list_str)        
-    ###SORTING ALGORITHM
     return render_template('output.html', optimal_task_list=optimal_task_list)
 
 # Main route for file saving: JSON or string
 @app.route('/downloadtext', methods=['GET'])
 def download():
     querry_instance = Query(name="data download")
-    
+    opt = session.get('optimal_task_list')
+    optdict = json.loads(opt.strip()) #this is a python dictionary
+    query_instance.save_text_file(optdict,"task.txt")
     
     
 @app.route('/downloadjson', methods=['GET'])
 def download():
     querry_instance = Query(name="data download")
+    opt = session.get('optimal_task_list')
+    optdict = json.loads(opt.strip()) #this is a python dictionary
+    query_instance.save_json_file(optdict,"task.json")
     
 
 
