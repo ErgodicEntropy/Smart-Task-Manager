@@ -65,6 +65,19 @@ The smart task manager automates energy allocation strategies by aligning estima
       - ***Task***: Data containing Task Requirements Model and Task Priority
 - **System Output**: Energy-Priority Aligned Tasks i.e. tasks sorted accoridngly to the user's priority and his energy level.
 ## Physical Architecture
+![[Physical Architecture](diagrams/Physical%20Architecture.jpeg)
+### Components Analysis: 
+- **User**: anyone engaged in a multitude of tasks but lacks a good model of: his own energy level, energy allocation strategies, task requirements.
+- **User Data Submission**: the user submits his data composed of his estimated energy and a task list ordered by priority.
+- **User Data Display**: the user confronts an interface that shows his submitted data, notably his task list.
+- **User-System Interaction**:
+   - *Energy Button*: the user clicks on this button to redirect towards a chat interface to correct, if need be, his prior energy estimation
+   - *Energy Chat Interface*
+   - *Task Requirements Button*: the user clicks on this button to redirect towards a chat interface discussing the energetic requirements of the task list he initially submitted.
+   - *Task Requirements Chat Interface*
+   - *Energy Strategy Button*: the user clicks on this button to redirect towards a chat interface discussing the various allocation strategies to maximize energy use efficiency
+   - *Energy Allocation Chat Interface*
+- **Optimal Task Button**: the user clicks on this button to redirect towards an interface that displays the optimally aligned task list with his energy level.
 
 
 ## Installation
