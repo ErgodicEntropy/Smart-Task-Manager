@@ -1,7 +1,7 @@
 import config
 from langchain.llms import HuggingFaceHub
-from langchain_huggingface import HuggingFaceEndpoint
-from langchain_community.llms import CTransformers
+# from langchain_huggingface import HuggingFaceEndpoint
+from langchain_community.llms import huggingface_hub, CTransformers
 
 
 # Default configurations

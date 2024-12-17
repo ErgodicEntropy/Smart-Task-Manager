@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import secrets
 import agents
 from query import Query
 import json
@@ -8,7 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = ''  # Required for using sessions
+app.secret_key = secrets.token_hex(16)  # Required for using sessions
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 X = os.getcwd()
@@ -117,7 +118,7 @@ def energy():
             db.session.commit()
             session['energy_level'] = energy_level
             flash(f'Energy level set to {energy_level}', 'success')
-            # return redirect('/energyconversation')
+            return redirect('/energyconversation')
         except:
             flash('There was an issue saving the energy level', 'error')
             return redirect('/energy')
@@ -355,7 +356,7 @@ def Sort():
 
 # Main route for file saving: JSON or string
 @app.route('/downloadtext', methods=['GET'])
-def download():
+def downloadtext():
     query_instance = Query(name="data download")
     opt = session.get('optimal_task_list')
     optdict = json.loads(opt.strip()) #this is a python dictionary
@@ -363,7 +364,7 @@ def download():
     
     
 @app.route('/downloadjson', methods=['GET'])
-def download():
+def downloadjson():
     query_instance = Query(name="data download")
     opt = session.get('optimal_task_list')
     optdict = json.loads(opt.strip()) #this is a python dictionary
