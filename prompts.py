@@ -58,8 +58,9 @@ Your output should be a summary of their current energy level and how you arrive
 - High
 - Extremely High
 
-Your output should be a clear-cut category: - Extremely Low, Low, Moderate, High, Extremely High
+Your output should be a clear-cut category (basically one line): extremely low, low, moderate, high, extremely High
 
+Make sure to write the output in that exact lower-case format!
 
 Provide your response in a clear, concise manner that gives the user a sense of how they might be feeling based on the entire conversation.
 
@@ -143,6 +144,91 @@ Allocation_Prompt_Template = PromptTemplate(
     
                                 """)
 
+TaskRequer = PromptTemplate(input_variables=['tasks_list'], template=
+"""
+
+You are a helpful assistant tasked with analyzing a list of tasks provided by the user. Your role is to assess the energetic requirements for each task and return a JSON dictionary containing specific information about each task in a structured format. 
+
+For each task in the list, return it as an object with the following properties:
+- `content`: A short description of the task (e.g., "Make the bed", "Go for a walk").
+- `energy_required`: The energy level required for the task. This must be strictly one of the following categories: 
+  - "extremely low"
+  - "low"
+  - "moderate"
+  - "high"
+  - "extremely high"
+- `preparation`: A brief description of what preparation or pacing might be needed (e.g., "Take breaks", "Prepare a plan").
+- `task_type`: Mentally, physically, or both demanding (e.g., "Physical", "Mental", "Both").
+- `recommended_start_time`: A suggested time for the user to start the task (e.g., "Morning", "Afternoon").
+
+Please note:
+- Be strict with the `energy_required` categories to ensure consistency in the output, as the values will be used programmatically.
+- Provide a general assessment based on common experiences for each task while acknowledging that individual perceptions of energy levels may vary.
+
+Here is the list of tasks provided by the user:
+{{ tasks_list }}
+
+Your response should strictly adhere to the following JSON format:
+[
+    {"content": "Task description", "energy_required": "low", "preparation": "Take it easy", "task_type": "Physical", "recommended_start_time": "Morning"},
+    {"content": "Task description", "energy_required": "moderate", "preparation": "Prepare a plan", "task_type": "Mental", "recommended_start_time": "Afternoon"},
+    {"content": "Task description", "energy_required": "high", "preparation": "Take breaks", "task_type": "Both", "recommended_start_time": "Evening"}
+]
+
+Ensure all tasks in the list are represented in the JSON dictionary. If additional information about a task seems unclear, make a reasonable assumption based on common experience and ensure the `energy_required` value is strictly one of the allowed categories. Be concise in your response, returning only the JSON object.
+
+---
+
+Here’s an example of your expected output:
+[
+    {
+        "content": "Go for a morning jog in the park",
+        "energy_required": "low",
+        "preparation": "Wear comfortable shoes and stretch lightly",
+        "task_type": "Physical",
+        "recommended_start_time": "Morning"
+    },
+    {
+        "content": "Complete the financial analysis report",
+        "energy_required": "moderate",
+        "preparation": "Gather all financial data and review last month’s report",
+        "task_type": "Mental",
+        "recommended_start_time": "Afternoon"
+    },
+    {
+        "content": "Plan a weekend outing",
+        "energy_required": "high",
+        "preparation": "Research destinations and activities, and organize travel arrangements",
+        "task_type": "Both",
+        "recommended_start_time": "Evening"
+    },
+    {
+        "content": "Clean and organize the garage",
+        "energy_required": "high",
+        "preparation": "Wear gloves and set aside containers for sorting items",
+        "task_type": "Physical",
+        "recommended_start_time": "Morning"
+    },
+    {
+        "content": "Learn a new programming concept",
+        "energy_required": "moderate",
+        "preparation": "Find reliable learning resources and allocate focused time",
+        "task_type": "Mental",
+        "recommended_start_time": "Afternoon"
+    },
+    {
+        "content": "Cook a three-course dinner",
+        "energy_required": "high",
+        "preparation": "Prepare ingredients and ensure kitchen tools are ready",
+        "task_type": "Both",
+        "recommended_start_time": "Evening"
+    }
+]
+
+Please process the task list and return the structured JSON response.
+""")
+
+
 Output_Prompt_Template = PromptTemplate(input_variables=['context'], template="""
 
 You are a helpful assistant who is assisting a user in organizing their tasks according to the energy levels required to complete them. The user has provided a list of tasks, each with its corresponding energy requirement. Your goal is to sort these tasks based on the energy required to accomplish them, starting with those that require the least energy and moving towards those that require the most. 
@@ -163,7 +249,7 @@ Please sort the tasks in the following way:
 For each task, return it as a structured object with the following properties:
 - `content`: A short description of the task (e.g., "Make the bed", "Go for a walk").
 - `energy_required`: The energy level required for the task (e.g., "extremely low", "low", "moderate", "high", "extremely high").
-- `preparation`: A description of what preparation or pacing might be needed (e.g., "Take breaks", "Prepare a plan").
+- `preparation`: A brief description of what preparation or pacing might be needed (e.g., "Take breaks", "Prepare a plan").
 - `task_type`: Mentally, physically, or both demanding (e.g., "Physical", "Mental", "Both").
 - `recommended_start_time`: A suggested time for the user to start the task (e.g., "Morning", "Afternoon").
 

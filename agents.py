@@ -17,6 +17,7 @@ TP = prompts.Task_Prompt_Template
 AP = prompts.Allocation_Prompt_Template
 OP = prompts.Output_Prompt_Template
 RP = prompts.Retain_Prompt_Template
+TRP = prompts.TaskRequer
 
 memory = ConversationBufferMemory(llm=llm,
     memory_key='chat_history', return_messages=True)
@@ -58,6 +59,17 @@ def run_task_query(query: str): #query type: list of strings or stringified list
     llmscaffold = llm.QueryRunner(modelname=model_name, maxtoken=maxtokens, temp=temperature)
     llm = llmscaffold.llm_def()
     Task_Agent = LLMChain(llm=llm,prompt=TP, verbose=True)
+    response = Task_Agent.run({"tasks_list": query})
+    # Log the response into memory
+    memory.chat_memory.add_user_message(f"Task List Query: {query}")
+    memory.chat_memory.add_ai_message(response)
+    return response
+
+# Run LLM Query for Task Requirement Agent
+def run_taskreq_query(query: str): #query type: list of strings or stringified list of strings (tasks list)
+    llmscaffold = llm.QueryRunner(modelname=model_name, maxtoken=maxtokens, temp=temperature)
+    llm = llmscaffold.llm_def()
+    Task_Agent = LLMChain(llm=llm,prompt=TRP, verbose=True)
     response = Task_Agent.run({"tasks_list": query})
     # Log the response into memory
     memory.chat_memory.add_user_message(f"Task List Query: {query}")
