@@ -319,8 +319,8 @@ def Sort():
             except:
                 flash("llm output problem", 'error')
     else:    
-        tasks = UpdatedToDo.query.order_by(UpdatedToDo.date).all()
-        return render_template(' output.html',tasks=tasks)
+        optimal_task_list = UpdatedToDo.query.order_by(UpdatedToDo.date).all()
+        return render_template(' output.html',optimal_task_list=optimal_task_list)
 
 # @app.route('/output', methods=['GET'])
 # def task_output():
