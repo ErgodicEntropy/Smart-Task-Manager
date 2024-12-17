@@ -320,6 +320,7 @@ def Sort():
                 flash("llm output problem", 'error')
     else:    
         optimal_task_list = UpdatedToDo.query.order_by(UpdatedToDo.date).all()
+        session['optimal_task_list'] = optimal_task_list
         return render_template(' output.html',optimal_task_list=optimal_task_list)
 
 # @app.route('/output', methods=['GET'])
