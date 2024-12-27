@@ -1,40 +1,183 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allocation Strategies</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1e1e2e; /* Dark background */
+            color: #f1f1f1;
+            font-family: 'Arial', sans-serif;
+            height: 100vh; /* Full viewport height */
+            display: flex;
+            flex-direction: column; /* Stack the elements vertically */
+            justify-content: flex-start; /* Align the content at the top */
+            align-items: center;
+        }
 
-{% block head %}
-{% endblock %}
+        .content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100%; /* Allow the content to take full height */
+        }
 
-{% block body %}
+        h1 {
+            font-size: 2rem;
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 10px; /* Space between h1 and the chat container */
+        }
+
+        .chat-container {
+            width: 100%; /* Full width */
+            flex: 1; /* Ensure it takes the remaining height */
+            border: 1px solid red;
+            background-color: #2b2b3d; /* Chat container background */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box; /* Ensure padding doesn't add to width/height */
+            border-radius: 8px; /* Rounded corners */
+            max-width: 800px; /* Limit the width for better appearance */
+            height: 100%; /* Chat container takes most of the space */
+        }
+
+        .chatbox {
+            flex: 1;
+            overflow-y: auto;
+            border: 1px solid #444;
+            padding: 15px;
+            background-color: #1c1c28; /* Chatbox background */
+            border-radius: 10px;
+            color: #f1f1f1;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            height: 100%;
+        }
+
+        .message {
+            margin-bottom: 10px;
+        }
+
+        .bot-message {
+            font-style: italic;
+            font-weight: bold;
+            color: white; /* Bot message color */
+            background-color: rgba(76, 175, 80, 0.1); /* Light green background for emphasis */
+            border-left: 4px solid #4caf50; /* Adds a stylish left border */
+            padding: 10px 15px; /* Adds padding for better spacing */
+            margin-bottom: 20px; /* Creates spacing between messages */
+            border-radius: 8px; /* Rounds the corners for a softer look */
+            font-size: 1rem; /* Ensures readable font size */
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow for depth */
+            animation: fadeIn 0.5s ease-in; /* Adds a smooth fade-in animation */
+        }
+
+        /* Optional: Keyframes for the fade-in animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-input form {
+            display: flex;
+            width: 100%;
+        }
+
+        .chat-input input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background-color: #1c1c28;
+            color: #f1f1f1;
+            font-size: 1rem;
+        }
+
+        .chat-input input[type="text"]:focus {
+            outline: none;
+            border-color: #4caf50;
+        }
+
+        .chat-input input[type="submit"] {
+            padding: 10px;
+            border: none;
+            background-color: #4caf50;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .chat-input input[type="submit"]:hover {
+            background-color: #3a9d40;
+        }
+
+        form div {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        form div input[type="submit"] {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        form div input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
 <div class="content">
-    <h1 style="text-align:center">Energy Allocation Strategies!</h1>
-    <p style="text-align:center">Here are few energy allocation strategies that might be useful!</p>
+    <h1 >Energy Allocation Strategies!</h1>
     <!-- Chatbox container -->
-    <div class="chat-container" style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; background-color: #f9f9f9;">
+    <div class="chat-container">
         <!-- Chat messages display -->
-        <div class="chatbox" style="height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; background-color: #fff; border-radius: 5px;">
+        <div class="chatbox">
             <!-- Static messages -->
-            <div class="message bot-message" style="font-style: italic; color: #007bff; margin-bottom: 10px;">
-                {% if not session.get('userAllocationMessage', False) %}
-                    {{allocation_resp}}
-                {% else %}
-                    {{conversational_resp}}
-                {% endif %} 
+            <div class="message bot-message">
+                {{allocation_resp}}
             </div>    
         </div>
 
         <!-- Input field and send button -->
-        <div class="chat-input" style="display: flex; align-items: center;">
-            <form action="/conversation" method="POST" style="width: 100%; display: flex; align-items: center;">
-                <input type="text" name="userMessage" placeholder="Type your message..." style="width: 80%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;"/>
-                <button type="submit" style="width: 20%; padding: 10px; border: none; background-color: #4CAF50; color: white; border-radius: 5px; cursor: pointer;">Send</button>
+        <div class="chat-input">
+            <form action="/conversation" method="POST">
+                <input type="text" name="userMessage" placeholder="Type your message..."/>
+                <input type="submit" value="Send">
             </form>
         </div>
 
         <!-- Chat Conversation Form (to send user message) -->
         <form action="/output" method="GET">
-            <input type="submit" value="Get Optimal Task List!">
+            <div>
+                <input type="submit" value="Get Optimal Task List!">
+            </div>
         </form>
     </div>
 </div>
-
-
-{% endblock %}
+</body>
+</html>

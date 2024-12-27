@@ -100,12 +100,6 @@ def update_task(id):
     return render_template('update.html', task=task)
 
 
-# Transitional Route (Task-to-Energy)
-
-@app.route('/finalize_tasks', methods=['POST'])
-def finalize_tasks():
-    return redirect('/energy')
-
 # Main routes for managing energy
 
 @app.route('/energy', methods=['POST', 'GET'])
@@ -118,7 +112,7 @@ def energy():
             db.session.commit()
             session['energy_level'] = energy_level
             flash(f'Energy level set to {energy_level}', 'success')
-            return redirect('/energyconversation')
+            # return redirect('/energyconversation')
         except:
             flash('There was an issue saving the energy level', 'error')
             return redirect('/energy')
@@ -127,25 +121,24 @@ def energy():
 
 # Main routes for managing user-system interaction
 
-@app.route('/energyconversation', methods=['POST'])
+@app.route('/energyconversation', methods=['POST','GET'])
 # Function to retrieve numeric energy value from the database
 def energyfunc():
     # Retrieve the most recent energy record for the current session's energy level
     energy = session.get('energy_level')
     if not energy:
         flash("energy level is missing",'error')
-    # Run the energy agent query
-    energy_resp = agents.run_energy_query(energy)
-    
-    usermessage = request.form['userMessage']
-    if usermessage:
-        session['userEnergyMessage'] = usermessage
-        conversational_resp = agents.continue_conversation(usermessage)
         
-    accurate_enegy_level = agents.retain_energy(usermessage)
-    session['updated_energy_level'] = accurate_enegy_level
+    energy_resp = agents.run_energy_query(energy)
+    # Run the energy agent query
+    if request.method == "POST":        
+        usermessage = request.form['userMessage']                          
+        accurate_energy_level = agents.retain_energy(usermessage)
+        session['updated_energy_level'] = accurate_energy_level
+        # successmessage = f"Thank you for your submission! It seems that your energy level is {accurate_energy_level}"
     
-    return render_template('energy_conversation.html', energy=energy, energy_resp=energy_resp, conversational_resp=conversational_resp)
+    
+    return render_template('energy_conversation.html', energy=energy, energy_resp=energy_resp)
 
 
 
@@ -156,12 +149,11 @@ def taskfunc():
     if not tasks_list:
         flash("task list is missing.", 'error')
     task_resp = agents.run_task_query(tasks_list)
-    usermessage = request.form['userMessage']
-    if usermessage:
-        session['userTaskMessage'] = usermessage
-        conversational_resp = agents.continue_conversation(usermessage)
+    # usermessage = request.form['userMessage']
+    # session['userTaskMessage'] = usermessage
+    # conversational_resp = agents.continue_conversation(usermessage)
 
-    return render_template('taskreq_conversation.html', task_resp=task_resp, conversational_resp=conversational_resp)
+    return render_template('taskreq_conversation.html', task_resp=task_resp)
 
 @app.route('/allocationconversation', methods=['POST'])
 # Function to retrieve task list from the session and input it to the LLM
@@ -170,16 +162,16 @@ def allocfunc():
     if not tasks_list:
         flash("task list is missing.", 'error')
     allocation_resp = agents.run_allocation_query(tasks_list)
-    usermessage = request.form['userMessage']
-    if usermessage:
-        session['userAllocationMessage'] = usermessage
-        conversational_resp = agents.continue_conversation(usermessage)
 
-    return render_template('allocation_conversation.html', allocation_resp=allocation_resp, conversational_resp=conversational_resp)
+    # usermessage = request.form['userMessage']
+    # if usermessage:
+    #     session['userAllocationMessage'] = usermessage
+    #     conversational_resp = agents.continue_conversation(usermessage)
+
+    return render_template('allocation_conversation.html', allocation_resp=allocation_resp)
 
 
 # Main route for managing the output
-
 @app.route('/output', methods=['GET', 'POST'])
 def Sort():
     ###SORTING ALGORITHM (better don't trust the fucking LLM in this) -> trade-off: the llm output should be as the dict keys otherwise errors
@@ -200,85 +192,40 @@ def Sort():
         3- Retain User Priority
         4- Greedy Algorithm: start with tasks that are the most energetically proximal to user energy (safety choice heuristic) -> sort them by priority
     """
-    #Energy Metric system
     if request.method == "POST":
-        #Get User Energy
-        UE = session.get('updated_energy_level')
+        UE = session.get('energy_level')
+        energy_dist = {"extremely high": 5, "high": 4, "moderate": 3, "low": 2, "extremely low": 1}
+        UEmetric = energy_dist[UE]
 
-        energy_dist = {"extremely high":5, "high":4, "moderate":3, "low":2, "extremely low":1}
-        UEmetric = energy_dist[UE] #1 to 5
-
-
-        distancedict = {}
-        distancedict[UE] = 0
+        distancedict = {UE: 0}
         re_energy_dist = energy_dist.copy()
         re_energy_dist.pop(UE)
         for level in re_energy_dist:
-            distancedict[level] = UEmetric - re_energy_dist[level] #negative for higher values than UE, positive for lower values than UE
-            re_energy_dist.pop(level)
-            
-            
-        
-        #Get Task Energy
-        tasks_list_str = session.get('tasks_list', "No tasks provided.") # string containing a list of strings
-        task_info_dict = agents.run_taskreq_query(tasks_list_str) #string python/json dict
-        jsontaskdict = json.load(task_info_dict) # for a list: tasks_info_dict.split(',')        
+            distancedict[level] = UEmetric - re_energy_dist[level]
 
-        ## Retrieve Tasks info from the LLM output
-        task_content = [ task['content'] for task in jsontaskdict]
-        # energy_req = [ task['energy_required'] for task in jsontaskdict]
-        # preparation = [ task['preparation'] for task in jsontaskdict]
-        # task_type = [ task['task_type'] for task in jsontaskdict]
-        # rst = [ task['recommended_start_time'] for task in jsontaskdict]
+        tasks_list_str = session.get('tasks_list')
+        task_info_dict = agents.run_taskreq_query(tasks_list_str).strip()
+        n = task_info_dict.index('[')
+        m = task_info_dict.index(']')
+        task_info_dict = task_info_dict[n:m+1]
+        jsontaskdict = json.loads(task_info_dict)
 
-        #Get User Priority
-        # task_list = tasks_list_str.split(',') #convert the string into a list of strings containing task content (Todo attribute)
+        task_content = [task['content'] for task in jsontaskdict]
         task_list = task_content
         N = len(task_list)
-        priority = [N-task_list.index(task) for task in task_list] #priority value is as unique as the task id/index
-        PriorityValue = {} #content-priority pair
-        for k in range(len(priority)): 
-            PriorityValue[task_list[k]] = priority[k] 
-        #Greedy Algorithm
-        UpdatedTasks = [] #composing both (prioritized) compatible tasks and incompatible tasks -> for compatible tasks, they are sorted by priority (energy fixed to user energy), for incompatible tasks, they are sorted by both priority and energy required (user energy proximity)
-        ## For compatible tasks:
-        compatible_tasks = list(filter(lambda task: task['energy_required']==UE,jsontaskdict)) #start with the safety choice heuristic
-        ### sorted by priority: already sorted 
-        # compatiblepriority = []
-        # for task in compatible_tasks:
-        #     X = taskvalue[task['content']]
-        #     compatiblepriority.append(X) #list sorted by design because jsontaskdict is sorted according to user priority input
-        
-        # sortedcp = sorted(compatiblepriority, reverse=True)
-        
-        # t = 0
-        # for task in compatible_tasks:
-        #     if taskvalue[task['content']] == sortedcp[t]:
-        #         UpdatedTasks.append(task)
-        #         t += 1
-        #     else:
-        #         pass            
+        priority = [N-task_list.index(task) for task in task_list]
+        PriorityValue = {task_list[k]: priority[k] for k in range(len(priority))}
 
+        UpdatedTasks = []
+        compatible_tasks = list(filter(lambda task: task['energy_required'] == UE, jsontaskdict))
         for task in compatible_tasks:
             UpdatedTasks.append(task)
-                    
-        ## For incompatible tasks:
-        incompatible_tasks = list(filter(lambda task: task['energy_required']!=UE,jsontaskdict)) #start with the safety choice heuristic
-        
-        ##Sorting: we accumulate both priority and proximity as one value to sort the incompatible tasks
-        
-        ### sorted by user energy proximity
-        ProximityValue = {} #EL is already sorted by priority as given by its index -> resolve value (user energy proximity) index (priority) conflict
-        for task in incompatible_tasks:
-            X =  distancedict[task['content']] 
-            ProximityValue[task['content']] = X
-                    
-        Proximity_Priority_Value = {}
-        for task in incompatible_tasks:
-            PPV = PriorityValue[task['content']] + ProximityValue[task['content']]
-            Proximity_Priority_Value[task['content']] = PPV
-        
-        sortedppv = sorted(Proximity_Priority_Value, reverse=True)
+
+        incompatible_tasks = list(filter(lambda task: task['energy_required'] != UE, jsontaskdict))
+        ProximityValue = {task['content']: distancedict[task['energy_required']] for task in incompatible_tasks}
+        Proximity_Priority_Value = {task['content']: PriorityValue[task['content']] + ProximityValue[task['content']] for task in incompatible_tasks}
+
+        sortedppv = sorted(Proximity_Priority_Value, key=Proximity_Priority_Value.get, reverse=True)
         remains = []
         l = 0
         for task in incompatible_tasks:
@@ -286,43 +233,35 @@ def Sort():
                 UpdatedTasks.append(task)
                 l += 1
             else:
-                remains.append(task) 
-                
-        if len(remains) != 0:                     
+                remains.append(task)
+
+        if len(remains) != 0:
             for j in range(len(remains)):
                 UpdatedTasks.append(remains[j])
-        
 
-        ### sorted by priority: already sorted
-        # incompatiblepriority = []
-        # for task in incompatible_tasks:
-        #     X = taskvalue[task['content']]
-        #     incompatiblepriority.append(X) #list sorted by design because jsontaskdict is sorted according to user priority input
-        
-        # sortedicp = sorted(incompatiblepriority, reverse=True)
-        
-        # j = 0
-        # for task in incompatible_tasks:
-        #     if taskvalue[task['content']] == sortedcp[j]:
-        #         UpdatedTasks.append(task)
-        #         j += 1
-        #     else:
-        #         pass
-        
-    
-    
-        #save in the db model
-        for k in range(len(UpdatedTasks)): #k index correlates with datetime.now()
-            new_task = UpdatedToDo(content = UpdatedTasks[k]['content'], energy_required = UpdatedTasks[k]['energy_required'], preparation = UpdatedTasks[k]['preparation'], task_type = UpdatedTasks[k]['task_type'], recommended_start_time =UpdatedTasks[k]['recommended_start_time'], date=datetime.now() )
+        for k in range(len(UpdatedTasks)):
+            new_task = UpdatedToDo(
+                content=UpdatedTasks[k]['content'],
+                energy_required=UpdatedTasks[k]['energy_required'],
+                preparation=UpdatedTasks[k]['preparation'],
+                task_type=UpdatedTasks[k]['task_type'],
+                recommended_start_time=UpdatedTasks[k]['recommended_start_time']
+            )
             try:
-                db.session.add(new_task) #date sorted 
+                db.session.add(new_task)
                 db.session.commit()
-            except:
-                flash("llm output problem", 'error')
-    else:    
-        optimal_task_list = UpdatedToDo.query.order_by(UpdatedToDo.date).all()
-        session['optimal_task_list'] = optimal_task_list
-        return render_template(' output.html',optimal_task_list=optimal_task_list)
+                print(f"Task added: {new_task}")
+            except Exception as e:
+                flash(f"llm output problem {e}", 'error')
+                print(f"Error adding task: {e}")
+
+    optimal_task_list = UpdatedToDo.query.order_by(UpdatedToDo.date).all()
+    print("------------------")
+    print("Optimal Task List:", optimal_task_list)
+    print("------------------")
+    session['optimal_task_list'] = ','.join([task.content for task in optimal_task_list])
+    return render_template('output.html', optimal_task_list=optimal_task_list)
+
 
 # @app.route('/output', methods=['GET'])
 # def task_output():
