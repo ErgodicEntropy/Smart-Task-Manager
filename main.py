@@ -102,10 +102,35 @@ def update_task(id):
 
 # Main routes for managing energy
 
-@app.route('/energy', methods=['POST', 'GET'])
-def energy():
+# @app.route('/energy', methods=['POST', 'GET'])
+# def energy():
+#     if request.method == 'POST':
+#         energy_level = request.form['energy']
+#         new_energy = Energy(level=energy_level)
+#         try:
+#             db.session.add(new_energy)
+#             db.session.commit()
+#             session['energy_level'] = energy_level
+#             flash(f'Energy level set to {energy_level}', 'success')
+#             # return redirect('/energyconversation')
+#         except:
+#             flash('There was an issue saving the energy level', 'error')
+#             return redirect('/energy')
+
+#     return render_template('energy.html')
+
+# User Data
+@app.route('/data', methods=['POST', 'GET'])
+def submit_form():
+    energy_dist = {"extremely high": 5, "high": 4, "moderate": 3, "low": 2, "extremely low": 1}
+    weights = {}
     if request.method == 'POST':
-        energy_level = request.form['energy']
+        form_data = request.form.to_dict()  # Converts the form data into a dictionary
+        # Energy Scoring Function
+        N = len(form_data)
+        energy_level = 0
+        for k in range(N):
+            energy_level+= (k+1)*form_data[k]/N
         new_energy = Energy(level=energy_level)
         try:
             db.session.add(new_energy)
@@ -118,58 +143,6 @@ def energy():
             return redirect('/energy')
 
     return render_template('energy.html')
-
-# Main routes for managing user-system interaction
-
-@app.route('/energyconversation', methods=['POST','GET'])
-# Function to retrieve numeric energy value from the database
-def energyfunc():
-    # Retrieve the most recent energy record for the current session's energy level
-    energy = session.get('energy_level')
-    if not energy:
-        flash("energy level is missing",'error')
-        
-    energy_resp = agents.run_energy_query(energy)
-    # Run the energy agent query
-    if request.method == "POST":        
-        usermessage = request.form['userMessage']                          
-        accurate_energy_level = agents.retain_energy(usermessage)
-        session['updated_energy_level'] = accurate_energy_level
-        # successmessage = f"Thank you for your submission! It seems that your energy level is {accurate_energy_level}"
-    
-    
-    return render_template('energy_conversation.html', energy=energy, energy_resp=energy_resp)
-
-
-
-@app.route('/taskconversation', methods=['POST'])
-# Function to retrieve task list from the session and input it to the LLM
-def taskfunc():
-    tasks_list = session.get('tasks_list')
-    if not tasks_list:
-        flash("task list is missing.", 'error')
-    task_resp = agents.run_task_query(tasks_list)
-    # usermessage = request.form['userMessage']
-    # session['userTaskMessage'] = usermessage
-    # conversational_resp = agents.continue_conversation(usermessage)
-
-    return render_template('taskreq_conversation.html', task_resp=task_resp)
-
-@app.route('/allocationconversation', methods=['POST'])
-# Function to retrieve task list from the session and input it to the LLM
-def allocfunc():
-    tasks_list = session.get('tasks_list')
-    if not tasks_list:
-        flash("task list is missing.", 'error')
-    allocation_resp = agents.run_allocation_query(tasks_list)
-
-    # usermessage = request.form['userMessage']
-    # if usermessage:
-    #     session['userAllocationMessage'] = usermessage
-    #     conversational_resp = agents.continue_conversation(usermessage)
-
-    return render_template('allocation_conversation.html', allocation_resp=allocation_resp)
-
 
 # Main route for managing the output
 @app.route('/output', methods=['GET', 'POST'])

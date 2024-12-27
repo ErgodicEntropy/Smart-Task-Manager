@@ -2,61 +2,6 @@ from langchain.prompts import PromptTemplate
 
 
 
-Energy_Prompt_Template = PromptTemplate(
-    input_variables=['energy_level'],
-    template="""
-You are a helpful assistant tasked with evaluating a user’s energy level. The user has provided an initial estimate of their energy level: {energy_level}.
-
-Please ask the user to send a paragraph that helps you accurately estimate their energy. Encourage them to describe their current state as clearly as possible by considering the following aspects:
-- Their physical and mental condition right now
-- Whether they’ve had any recent rest or breaks
-- How prepared they feel to take on tasks that require concentration
-
-
-Make sure to explain that the more specific and honest their description is, the better the estimate will be. Keep the tone friendly and concise, and remind them to focus on the most relevant details.
-Make sure that your output to the user is extremely brief without redundancy, ideally a phrase or two.
-
-"""
-)
-
-
-Retain_Prompt_Template = PromptTemplate(
-    input_variables=['user_message'],
-    template="""
-You have been having a conversation with the user about their tasks, energy levels, and various other factors that influence their energy. 
-
-Based on the conversation, as well as the user's final response to the question of how they rate their energy level, your task is to summarize their current energy state based on their answer: {user_message}
-
-Please consider the following:
-1. Throughout the conversation, the user mentioned tasks and activities that may have provided insight into their energy level (e.g., tasks they consider tiring, mentally exhausting, etc.).
-2. Pay attention to the final message where the user explicitly rates their energy level, or if they don't provide a final rating, summarize their energy level based on the entire conversation. Consider factors like how demanding their tasks were, how they described their energy during the conversation, and any explicit ratings provided.
-3. If the user did not explicitly state their energy level, infer it based on their statements about task difficulty, physical or mental exhaustion, and overall tone throughout the chat.
-
-Your output should be a summary of their current energy level and how you arrived at that conclusion. The energy levels to consider are:
-- Extremely Low
-- Low
-- Moderate
-- High
-- Extremely High
-
-Your output should be a clear-cut category (basically one line): extremely low, low, moderate, high, extremely High
-
-Make sure to write the output in that exact lower-case format!
-
-Provide your response in a clear, concise manner that gives the user a sense of how they might be feeling based on the entire conversation.
-
-Example: 
-If the user mentions feeling drained after doing multiple tasks and says they have very little energy left, your response might conclude: "It seems like you're feeling low on energy after completing various tasks. You've described feeling physically and mentally exhausted, and your energy level seems to be quite low."
-
-Please give a short, supportive, and empathetic summary, acknowledging the user's energy level.
-
----
-Final energy rating (if provided by the user) or inferred energy level:
-
-"""
-)
-
-
 Task_Prompt_Template = PromptTemplate(
     input_variables=['tasks_list'],
     template="""

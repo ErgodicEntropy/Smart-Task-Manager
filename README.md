@@ -43,7 +43,7 @@ The smart task manager automates energy allocation strategies by aligning estima
 - **Sunk Gain Exploitation**: Use small, early wins to create momentum and buffer against failures.
 - **Risk-Neutral Decision Making**: Focus on guaranteed gains to exploit risk-aversion toward losses.
 
-## Logical Architecture (Overall Product)
+## Logical Architecture
 ![Logical Architecture](diagrams/Logical%20Architecture.jpeg)
 ### Components Analysis:
 - **User**: anyone engaged in a multitude of tasks but lacks a good model of: his own energy level, energy allocation strategies, task requirements.
@@ -75,14 +75,19 @@ The smart task manager automates energy allocation strategies by aligning estima
 - **Scale**: The scale used to compute the weighted average score of energy level and task requirements: Likert Scale (Numeric Discrete), Percentage (Numeric Continuous), Categorical (Nominal Discrete)
 - **Energy Orthogonalization Function**: this function maximizes user information feedback based on the orthogonal superposition principle.
 - **Energy Scoring Function**: this function compounds the results of the energy orthogonalization function into a weighted average or sum.
+- **Energy Threshold Function**: this function classifies the result of the energy scoring function into an energy category from low to high
 - **Task Orthogonalization Function**: this function maximizes task requirement information based on the orthogonal superposition principle.
 - **Requirement Scoring Function**: this function compounds the results of the task orthogonalization function into a weighted average or sum
-- **Task Requirements**: the energetic demands of each tasks which depend on a lot of factors and the prevailing context, making them hard to measure accurately. 
-- **AI Agent**: the role of the AI Agent is to contextualize the task requirement database to fit the user-context (user input data).
+- **Requirement Threshold Function**: this function classifies the result of the task scoring function into an task required energy category from low to high
+- **Task Requirements**: the energetic demands of each tasks which depend on a lot of factors and the prevailing context, making them hard to measure accurately. Technically, the task requirements is stored in a dynamic database that changes with human-feedback.
+- **AI Agent**: the role of the AI Agent is to contextualize the task requirement database to fit the user-context (user input data). To do so, it checks whether there is a pre-existing human feedback on the database (Fine-tuning or RAG), otherwise it generates task requirement itself (specific prompting). This process goes from initial prompting to eventual Fine-tuning or RAG.
 - **Optimal Task Button**: the user clicks on this button to redirect towards an interface that displays the optimally aligned task list with his energy level as well as priority.
+- **Kanban Board**: the optimal task list is organized according to a gamified Kanban board.
+- **Human-in-the-Loop and Network Effects**: this subarchitecture exploits the positive network effects of other users feedback to allow for scalability and impact.
+- **User Feedback On Finished Tasks**: the user provides feedback on the task difficulty (or required energy) after finishing it.
+- **Context-Friendly Human Feedback**: task labeling based on context-friendly human feedback represented by the task required energy on the user initial energy ratio -> a supervised learning model is utilized to match each task-user energy ratio to a task label (user-free task required energy) or a symbolic model using a JSON dict (this process is called task decontextualization, and its purpose is scalability to facilitate network effects)
 - **Recommendation Button**: the user clicks on this button to get recommendations on energy allocation strategies for the optimal task list provided.
-- **User Feedback On Finished Tasks**: the user provides feedback on the task difficulty after finishing it.
-
+- **QA Conversational Interface**: the LLM enters into a chat conversation with the user about each task in the optimal tasks list (ideally, fine-tuning or RAG should be used in this step) ->  With enough human-in-the-loop (enough network effects), the task requirements database gets increasingly filled to eventually allow for the transition from specific prompting to fine-tuning and/or RAG.
 
 ## Installation
 
