@@ -8,6 +8,38 @@ from flask import Flask, render_template, request, redirect, session, flash, url
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
+def daycategory(hour):
+    if 5 <= hour < 9:
+        return "Early Morning"
+    elif 9 <= hour < 12:
+        return "Late Morning"
+    elif 12 <= hour < 17:
+        return "Afternoon"
+    elif 17 <= hour < 20:
+        return "Evening"
+    elif 20 <= hour < 24:
+        return "Night"
+    else:
+        return "Midnight"
+
+def daymetric(peak_daytime,current_daytime):
+    daydict = {
+        "Early Morning": 1,
+        "Late Morning": 2,
+        "Afternoon": 3,
+        "Evening": 4,
+        "Night": 5,
+        "Midnight": 6
+    }
+    
+    daydist= {peak_daytime : 6} # as maximum value 
+    L = daydict.copy()
+    L.pop(peak_daytime)
+    for dt in L:
+        daydist[dt] = 6 - abs(daydict[peak_daytime] - daydict[dt])
+        
+    return daydist[current_daytime]
+    
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)  # Required for using sessions
 
@@ -99,50 +131,63 @@ def update_task(id):
             return "There was an error updating your task"
     return render_template('update.html', task=task)
 
-
-# Main routes for managing energy
-
-# @app.route('/energy', methods=['POST', 'GET'])
-# def energy():
-#     if request.method == 'POST':
-#         energy_level = request.form['energy']
-#         new_energy = Energy(level=energy_level)
-#         try:
-#             db.session.add(new_energy)
-#             db.session.commit()
-#             session['energy_level'] = energy_level
-#             flash(f'Energy level set to {energy_level}', 'success')
-#             # return redirect('/energyconversation')
-#         except:
-#             flash('There was an issue saving the energy level', 'error')
-#             return redirect('/energy')
-
-#     return render_template('energy.html')
-
 # User Data
 @app.route('/data', methods=['POST', 'GET'])
 def submit_form():
-    energy_dist = {"extremely high": 5, "high": 4, "moderate": 3, "low": 2, "extremely low": 1}
-    weights = {}
+    energy_dist = {"extremely high": 90, "high": 70, "moderate": 50, "low": 30, "extremely low": 10}
+    currenthour = datetime.today().hour
+    day_category = daycategory(currenthour)
     if request.method == 'POST':
-        form_data = request.form.to_dict()  # Converts the form data into a dictionary
-        # Energy Scoring Function
-        N = len(form_data)
-        energy_level = 0
+        data_list = [
+            request.form.get('clarity'),
+            request.form.get('focus'),
+            request.form.get('fatigue'),
+            request.form.get('readiness'),
+            request.form.get('load'),
+            request.form.get('motivation'),
+            request.form.get('stress'),
+            request.form.get('physical_fatigue'),
+            daymetric(request.form.get('circadian_rhythm'), day_category),
+            request.form.get('trend'),
+            request.form.get('external_stimulation'),
+            request.form.get('interaction_energy'),
+            request.form.get('task_initiation')
+        ]
+        # Energy Scoring Function (Weighted Average)
+        N = len(data_list)
+        weights = np.random.pareto(2.0,N)
+        weights = weights/weights.sum() # Normalize to sum to 1
+        
+        weighted_sum = 0
         for k in range(N):
-            energy_level+= (k+1)*form_data[k]/N
+            weighted_sum += weights[k]*data_list[k]
+        
+        average_energy = weighted_sum/N
+
+        #Energy Threshold Function
+        # Determine energy level category
+        if average_energy >= energy_dist["extremely high"]:
+            energy_level = "extremely high"
+        elif average_energy >= energy_dist["high"]:
+            energy_level = "high"
+        elif average_energy >= energy_dist["moderate"]:
+            energy_level = "moderate"
+        elif average_energy >= energy_dist["low"]:
+            energy_level = "low"
+        else:
+            energy_level = "extremely low"
+                    
         new_energy = Energy(level=energy_level)
         try:
             db.session.add(new_energy)
             db.session.commit()
             session['energy_level'] = energy_level
             flash(f'Energy level set to {energy_level}', 'success')
-            # return redirect('/energyconversation')
         except:
             flash('There was an issue saving the energy level', 'error')
-            return redirect('/energy')
+            return redirect('/data')
 
-    return render_template('energy.html')
+    return render_template('data.html')
 
 # Main route for managing the output
 @app.route('/output', methods=['GET', 'POST'])
@@ -177,6 +222,8 @@ def Sort():
             distancedict[level] = UEmetric - re_energy_dist[level]
 
         tasks_list_str = session.get('tasks_list')
+        tasklist = tasks_list_str.split(',')
+        #Task Requirement
         task_info_dict = agents.run_taskreq_query(tasks_list_str).strip()
         n = task_info_dict.index('[')
         m = task_info_dict.index(']')
@@ -236,51 +283,11 @@ def Sort():
     return render_template('output.html', optimal_task_list=optimal_task_list)
 
 
-# @app.route('/output', methods=['GET'])
-# def task_output():
-#     # Fetch data from session
-#     energy_level = session.get('updated_energy_level', "No energy level provided.") #string
-#     tasks_list_str = session.get('tasks_list', "No tasks provided.") # string containing a list of strings
-    
-#     # Initialize the Query instance
-#     query_instance = Query(name="Task-Energy Output Management")
-
-#     # Concatenate inputs into a single context string
-#     context = query_instance.concatenate_inputs(energy_level, tasks_list_str)
-
-#     # Pass context to the query runner or agent
-#     info_task_list_str = agents.run_output_query(context)
-#     ### CONVERSION: String to a python dict or list
-#     info_task_list = query_instance.json_decode(info_task_list_str)        
-#     # optimal_task_list = optimal_task_list_str.split(', ')  # Adjust based on the response format (e.g., comma-separated list)
-#     # optimal_task_list = json.loads(optimal_task_list_str)
-#     # optimal_task_list = query_instance.transform_response_to_json(optimal_task_list_str)
-#     tasks = Todo.query.order_by(Todo.date).all() # this is a Todo object (db.Model) (tasks[0] is the earliest and the most prioritized)
-#     tasks_list = [task.id for task in tasks] #this is a list of strings (tasks[0] is the earliest and the most prioritized)
-        
-#     optimal_task_list = 0
-    
-#     ### Stringify the optimal task list/dict back into a string
-#     session['optimal_task_list'] = ', '.join(optimal_task_list) 
-#     # Assuming optimal_task_list is a string, you can split it into a list
-#     optimal_task_list = query_instance.json_decode(optimal_task_list_str)        
-#     return render_template('output.html', optimal_task_list=optimal_task_list)
-
-# Main route for file saving: JSON or string
-@app.route('/downloadtext', methods=['GET'])
-def downloadtext():
-    query_instance = Query(name="data download")
-    opt = session.get('optimal_task_list')
-    optdict = json.loads(opt.strip()) #this is a python dictionary
-    query_instance.save_text_file(optdict,"task.txt")
+@app.route('/recommendation', methods=['POST','GET'])
+def recommend():
     
     
-@app.route('/downloadjson', methods=['GET'])
-def downloadjson():
-    query_instance = Query(name="data download")
-    opt = session.get('optimal_task_list')
-    optdict = json.loads(opt.strip()) #this is a python dictionary
-    query_instance.save_json_file(optdict,"task.json")
+    render_template('recommendation.html')
     
 
 

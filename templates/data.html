@@ -97,58 +97,190 @@
         <p>Please answer the following questions to help us measure your energy levels.</p>
         <form action="/submit" method="POST">
             <!-- Intellectual/Cognitive Energy: Clarity of Thought, Focus/Attention, Mental Fatigue, Task Readiness, Cognitive Load -->
-             <h5>Intellectual/Cognitive Energy</h5>
-            <label for="clarity">Clarity of Thought: Are your thoughts feeling clear or foggy?</label>
-            <input type="range" id="clarity" name="clarity" min="0" max="100" value="50">
-        
-            <label for="focus">Focus/Attention: Can you easily focus on one task right now?</label>
-            <input type="range" id="focus" name="focus" min="0" max="100" value="50">
-        
+            <h5>Intellectual/Cognitive Energy</h5>
+            <h6>Clarity of Thought:</h6> 
+            <label for="clarity"> How clear are your thoughts at this moment?</label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="flex-shrink: 0;">Completely Foggy</span>
+                <input type="range" id="fatigue" name="fatigue" min="0" max="100" value="50" style="flex-grow: 1;" oninput="updateClarityValue(this.value)">
+                <span style="flex-shrink: 0;">Fully Clear</span>
+            </div>
+            <span id="clarity-value">50</span>
+
+            <h6>Focus/Attention:</h6>
+            <label for="focus"> How focused do you feel right now?</label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="flex-shrink: 0;">Completely Disordered</span>
+                <input type="range" id="focus" name="focus" min="0" max="100" value="50" style="flex-grow: 1;" oninput="updateFocusValue(this.value)">
+                <span style="flex-shrink: 0;">Very Focused</span>
+            </div>
+            <span id="focus-value">50</span>
+
+            <h6>Fatigue:</h6>
+            <label for="fatigue">How mentally refreshed do you feel right now?</label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="flex-shrink: 0;">Completely Drained</span>
+                <input type="range" id="fatigue" name="fatigue" min="0" max="100" value="50" style="flex-grow: 1;" oninput="updateFatigueValue(this.value)">
+                <span style="flex-shrink: 0;">Very Fresh</span>
+            </div>
+            <span id="fatigue-value">50</span>
+
+            <h6>Task Readiness:</h6>
+            <label for="readiness"> How prepared do you feel to tackle a challenging task right now?</label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="flex-shrink: 0;">Not Prepared</span>
+                <input type="range" id="readiness" name="readiness" min="0" max="100" value="50" style="flex-grow: 1;" oninput="updateReadinessValue(this.value)">
+                <span style="flex-shrink: 0;">Fully Prepared</span>
+            </div>
+            <span id="readiness-value">50</span>
+
+            <h6>Cognitive Load:</h6>
+            <label for="load">How lightweight does your current mental workload feel?</label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="flex-shrink: 0;">Overloaded</span>
+                <input type="range" id="load" name="load" min="0" max="100" value="50" style="flex-grow: 1;" oninput="updateLoadValue(this.value)">
+                <span style="flex-shrink: 0;">Lightweight</span>
+            </div>
+            <span id="load-value">50</span>
+
             <!-- Psychological/Mental Energy: Motivation, Stress Level, Emotional State -->
             <h5>Psychological/Mental Energy</h5>
-            <label for="motivation">Motivation: How willing do you feel to work on something mentally challenging?</label>
-            <input type="range" id="motivation" name="motivation" min="0" max="100" value="50">
+            <h6>Motivation:</h6>
+            <label for="motivation"> How willing do you feel to work on something mentally challenging?</label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="flex-shrink: 0;">Disinterested</span>
+                <input type="range" id="motivation" name="motivation" min="0" max="100" value="50" style="flex-grow: 1;" oninput="updateMotivationValue(this.value)">
+=                <span style="flex-shrink: 0;">Motivated</span>
+            </div>
+            <span id="motivation-value">50</span>
         
-            <label for="stress">Stress Level: Do you feel calm or stressed at this moment?</label>
-            <input type="range" id="stress" name="stress" min="0" max="100" value="50">
+            <h6>Stress:</h6>
+            <label for="stress"> How much calm do you feel right now?</label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="flex-shrink: 0;">Chaotic</span>
+                <input type="range" id="stress" name="stress" min="0" max="100" value="50" style="flex-grow: 1;" oninput="updateStressValue(this.value)">
+                <span style="flex-shrink: 0;">Very Calm</span>
+            </div>
+            <span id="stress-value">50</span>
         
             <!-- Physical Energy -->
             <h5>Physical Energy</h5>
-            <label for="physical_fatigue">Physical Fatigue: Do you feel physically energized or tired?</label>
-            <input type="range" id="physical_fatigue" name="physical_fatigue" min="0" max="100" value="50">
+            <h6>Physical Fatigue:</h6>
+            <label for="physical_fatigue"> How much physically energized you feel?</label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="flex-shrink: 0;">Tired</span>
+                <input type="range" id="physical_fatigue" name="physical_fatigue" min="0" max="100" value="50" style="flex-grow: 1;" oninput="updatePhysicalValue(this.value)">
+                <span style="flex-shrink: 0;">Strong</span>
+            </div>
+            <span id="physical-value">50</span>
         
             <!-- Temporal Energy: Circadian Rhythm (Peak Times/Cortisol Level), Energy Trends -->
             <h5>Temporal Energy</h5>
             <!-- Circadian Rhythm (Peak Times/Cortisol Level) -->
-            <label for="circadian_rhythm">Circadian Rhythm: Is this time of day usually a high-energy period for you?</label>
+             <h6>Circadian Rhythm:</h6> 
+            <label for="circadian_rhythm">Set your peak hours</label>
             <select id="circadian_rhythm" name="circadian_rhythm">
-                <option value=""></option>
-                <option></option>
-                <option></option>
-                <option></option>
-                <option></option>
+                <option value="Early Morning">Early Morning (5AM-9AM)</option>
+                <option value="Late Morning">Late Morning (9AM-12PM)</option>
+                <option value="Afternoon">Afternoon (12PM-5PM)</option>
+                <option value="Evening">Evening (5PM-8PM)</option>
+                <option value="Night">Night (8PM-12AM)</option>
+                <option value="Midnight">Midnight (12AM-5AM)</option>
             </select>
             <!-- Energy Trends -->
-            <label for="circadian_rhythm">How do you feel your energy is changing?</label>
-            <input type="range" id="circadian_rhythm" name="circadian_rhythm" min="0" max="100" value="50">
+            <h6>Energy Trend:</h6>
+            <label for="trend">How do you feel your energy is changing?</label>
+            <select id="trend" name="trend">
+                <option value=-1>Falling</option>
+                <option value=0>Steady</option>
+                <option value=1>Rising</option>
+            </select>
         
             <!-- Environmental/Social Energy: Social Interaction, External Stimulation -->
             <h5>Environmental/Social Energy</h5>
             <!-- External Stimulation -->
-            <label for="external_stimulation">External Stimulation: Is your environment supporting or draining your energy?</label>
-            <input type="range" id="external_stimulation" name="external_stimulation" min="0" max="100" value="50">
+            <h6>External Stimulation:</h6>
+            <label for="external_stimulation">How supportive does your environment feel to your energy right now?</label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="flex-shrink: 0;">Very Hostile</span>
+                <input type="range" id="external_stimulation" name="external_stimulation" min="0" max="100" value="50" style="flex-grow: 1;" oninput="updateExternallValue(this.value)">
+                <span style="flex-shrink: 0;">Very Friendly</span>
+            </div>
+            <span id="external-value">50</span>
+            
             <!-- Social Interaction -->
-            <label for="interaction_energy">Interaction Energy: Do social interactions energize or drain you?</label>
-            <input type="range" id="interaction_energy" name="interaction_energy" min="0" max="100" value="50">
+            <h6>Social Interaction:</h6>
+            <label for="interaction_energy">How energized do you feel from social interactions right now?</label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="flex-shrink: 0;">Socially Drained</span>
+                <input type="range" id="interaction_energy" name="interaction_energy" min="0" max="100" value="50" style="flex-grow: 1;" oninput="updateSocialValue(this.value)">
+                <span style="flex-shrink: 0;">Socially Stimulated</span>
+            </div>
+            <span id="social-value">50</span>
         
             <!-- Behavioral Energy -->
             <h5>Behavioral Energy</h5>
-            <label for="task_initiation">Task Initiation: How easy is it for you to start a new task?</label>
-            <input type="range" id="task_initiation" name="task_initiation" min="0" max="100" value="50">
-        
+            <label for="task_initiation">How easy is it for you to start a new task?</label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="flex-shrink: 0;">Very Hard</span>
+                <input type="range" id="task_initiation" name="task_initiation" min="0" max="100" value="50" style="flex-grow: 1;" oninput="updateBehaviorValue(this.value)">
+                <span style="flex-shrink: 0;">Very Easy</span>
+            </div>
+            <span id="behavior-value">50</span>
+
             <input type="submit" value="Submit">
         </form>
-        
+
+        <script>
+            function updateClarityValue(value){
+                document.getElementById("clarity-value").textContent = value
+            }
+
+            function updateFocusValue(value){
+                document.getElementById("focus-value").textContent = value
+            }
+
+            function updateFatigueValue(value){
+                document.getElementById("fatigue-value").textContent = value
+            }
+
+            function updateLoadValue(value){
+                document.getElementById("load-value").textContent = value
+            }
+            function updateReadinessValue(value){
+                document.getElementById("readiness-value").textContent = value
+            }
+
+            function updateMotivationValue(value){
+                document.getElementById("motivation-value").textContent = value
+            }
+            function updateStressValue(value){
+                document.getElementById("stress-value").textContent = value
+            }
+
+            function updatePhysicalValue(value){
+                document.getElementById("physical-value").textContent = value
+            }
+
+            function updateExternalValue(value){
+                document.getElementById("external-value").textContent = value
+            }
+            function updateSocialValue(value){
+                document.getElementById("social-value").textContent = value
+            }
+
+            function updateBehaviorValue(value){
+                document.getElementById("behavior-value").textContent = value
+            }
+
+
+
+
+
+
+        </script>
+
+
         <form action="/output" method="POST">
             <input type="submit" value="Done">
         </form>

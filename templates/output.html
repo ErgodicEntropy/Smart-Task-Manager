@@ -59,7 +59,13 @@
                     <td>{{ task.task_type }}</td>
                     <td>{{ task.recommended_start_time }}</td>
                     <td>
-                        <a href="#" class="finish-button" onclick="markAsFinished({{ loop.index }})">Finish</a><br>
+                        <a href="#" class="todo-button" onclick="markAsToDo('{{ loop.index }}')">To Do</a><br>
+                    </td>    
+                    <td>
+                        <a href="#" class="doing-button" onclick="markAsDoing('{{ loop.index }}')">Doing</a><br>
+                    </td>    
+                    <td>
+                        <a href="#" class="done-button" onclick="markAsDone('{{ loop.index }}')">Done</a><br>
                     </td>    
                 </tr>
             {% endfor %}
@@ -67,30 +73,47 @@
     </table>
 
     <!-- Chat Conversation Form (to send user message) -->
-    <form action="/downloadtext" method="GET">
-        <input type="submit" value="Download Data (Text)">
-    </form> 
-    <form action="/downloadjson" method="GET">
-        <input type="submit" value="Download Data (JSON)">
+    <form action="/recommendation" method="GET">
+        <input type="submit" value="Get Recommendations!">
     </form> 
 </div>
 
+<!-- Kanban Board -->
 <script>
-    function markAsFinished(taskId) {
-        // Find the task row by its ID
+    function markAsToDo(taskId) {
         const taskRow = document.getElementById('task-' + taskId);
-        const taskContent = taskRow.querySelector('td');
+        taskRow.classList.remove('finished', 'doing');
+        taskRow.classList.add('todo');
+    }
 
-        // Mark the task as finished (adding the class and applying the effect)
+    function markAsDoing(taskId) {
+        const taskRow = document.getElementById('task-' + taskId);
+        taskRow.classList.remove('finished', 'todo');
+        taskRow.classList.add('doing');
+    }
+
+    function markAsDone(taskId) {
+        const taskRow = document.getElementById('task-' + taskId);
+        taskRow.classList.remove('todo', 'doing');
         taskRow.classList.add('finished');
-        taskContent.classList.add('completed');
-
-        // Optionally, change the button to reflect the completed state
-        const finishButton = taskRow.querySelector('.finish-button');
-        finishButton.innerHTML = 'Completed';
-        finishButton.style.backgroundColor = '#808080';
-        finishButton.style.cursor = 'not-allowed';
     }
 </script>
+
+<style>
+    .todo {
+        background-color: #ffcccc;
+        transition: background-color 0.3s ease;
+    }
+
+    .doing {
+        background-color: #ffffcc;
+        transition: background-color 0.3s ease;
+    }
+
+    .finished {
+        background-color: #ccffcc;
+        transition: background-color 0.3s ease;
+    }
+</style>
 
 {% endblock %}

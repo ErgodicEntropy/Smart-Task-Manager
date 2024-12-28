@@ -1,4 +1,3 @@
-# import llm
 from langchain.llms import Cohere
 import prompts
 from langchain.chains import ConversationChain, LLMChain
@@ -7,7 +6,7 @@ import os
 
 
 # Default configurations
-COHERE_API_TOKEN = 'IdU5efIJTsWndc1HkSqoqdCK45tViujej4p8NopX'
+COHERE_API_TOKEN = ''
 
 os.environ['COHERE_API_KEY'] = COHERE_API_TOKEN
 
@@ -42,8 +41,6 @@ def continue_conversation(user_message: str): #query type: string (user message)
 def run_task_query(query: str): #query type: list of strings or stringified list of strings (tasks list)
     Task_Agent = LLMChain(llm=llm,prompt=TP, verbose=True)
     response = Task_Agent.run({"tasks_list": query})
-    # Task_Agent = TP | llm | StrOutputParser()
-    # response = Task_Agent.invoke({"tasks_list":query})
     # Log the response into memory
     memory.chat_memory.add_user_message(f"Task List Query: {query}")
     memory.chat_memory.add_ai_message(response)
@@ -53,8 +50,6 @@ def run_task_query(query: str): #query type: list of strings or stringified list
 def run_taskreq_query(query: str): #query type: list of strings or stringified list of strings (tasks list)
     Task_Agent = LLMChain(llm=llm,prompt=TRP, verbose=True)
     response = Task_Agent.run({"tasks_list": query})
-    # Task_Agent = TRP | llm | StrOutputParser()
-    # response = Task_Agent.invoke({"tasks_list":query})
     # Log the response into memory
     memory.chat_memory.add_user_message(f"Task List Query: {query}")
     memory.chat_memory.add_ai_message(response)
@@ -65,8 +60,6 @@ def run_taskreq_query(query: str): #query type: list of strings or stringified l
 def run_allocation_query(query: str): #query type: list of strings or stringified list of strings (tasks list)
     Allocation_Agent = LLMChain(llm=llm,prompt=AP, verbose=True)
     response = Allocation_Agent.run({"tasks_list": query})
-    # Allocation_Agent = AP | llm | StrOutputParser()
-    # response = Allocation_Agent.invoke({"tasks_list":query})
     # Log the response into memory
     memory.chat_memory.add_user_message(f"Task List Query: {query}")
     memory.chat_memory.add_ai_message(response)
@@ -76,8 +69,6 @@ def run_allocation_query(query: str): #query type: list of strings or stringifie
 def run_output_query(query: str): #query type: string + list of strings or stringified list of strings (tasks list + energy)
     Output_Agent = LLMChain(llm=llm,prompt=OP, verbose=True)
     response = Output_Agent.run({"context": query})
-    # Output_Agent = OP | llm | StrOutputParser()
-    # response = Output_Agent.invoke({"context":query})
     return response
 
 

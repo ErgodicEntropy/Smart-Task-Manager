@@ -47,23 +47,34 @@ The smart task manager automates energy allocation strategies by aligning estima
 ![Logical Architecture](diagrams/Logical%20Architecture.jpeg)
 ### Components Analysis:
 - **User**: anyone engaged in a multitude of tasks but lacks a good model of: his own energy level, energy allocation strategies, task requirements.
+   - *Goals (Priority)*
+   - *Current skills*
+   - *Energy levels*
+
 - **Subjective Factors**: these are factors that inevitably emanates from the user.
    - *Biased Estimation*: the user subjectively lacks a representative model of his own energy level due to inevitable imperfect information and partial observability, thereby potentially disrupting the system's performance. 
    - *Priority (Sorting Order)*: the user has a subjective priority order that the system shouldn't alter but merely align with his (estimated) energy level.
 - **System Inputs**:
-   - *Estimated Energy*: the energy esimated by the user. Given that this esimation is subject to bias and lack of good representation, Sensitivity Analysis is needed to ensure that the system is well-conditioned (low condition number) i.e. robust, or that the energy estimation process is enhanced with categorical nudges and choices.
+   - *Estimated Energy*: the energy esimated by the user. Given that this esimation is subject to bias and lack of good representation, Sensitivity Analysis is needed to ensure that the system is well-conditioned (low condition number) i.e. robust, or that the energy estimation process is enhanced with categorical nudges and choices (user skills can also be used instead of user energy but that changes the logic of the app).
    - *Estimation Error Correction*: 
       - Orthogonalization Method: Divide-and-Conquer the energy-specific question into subquestions each of which concerning a domain and/or axis of energy measurement which is orthogonal to every other subquestion (zero covariance or overlap implies maximum user information feedback) e.g. Intellectual Energy (e.g. Cognitive Energy: Clarity of Thought, Focus/Attention, Mental Fatigue. Task Readiness, Cognitive Load), Psychological Energy (e,g. Mental Energy: Motivation, Stress Level, Emotional State), Physical Energy, Temporal Energy (Circadian Rhythm (Peak Times/Cortisol Level), Energy Trends), Environmental Energy (External Stimulation), Social Energy (Interaction Energy), Behavioral Energy. 
-      - Pilot Test: a quick, gamified test to measure energy. The problem with this method is that the measures do not prefigure the task unless the test is the task itself (performance actualism) which defeats the logic.
+      - Pilot Test: a quick, gamified test to measure energy. The problem with this method is that the measures do not prefigure the task unless the test is the task itself (performance actualism) which defeats the logic due to the task-specific nature of the test for its effectiveness. However, user-specific (task-free) tests can be conducted with the purpose of measuring user energy.
    - *Task List*: list of tasks sorted accordingly to priority, or unsorted if the user doesn't have an initial priority.
 - **Smart Task Manager System**: the STM system processes input information to generate appropriate model to be utilized by the user
    - *Sensitivity Analysis*: the input error corresponds to an output error regardless of the system's efficiency, implying the need for estimation error correction, otherwise the system will function at an effectiveness value bounded by the input error.
    - *Metacognitive Knowledge*: this is the second-order metacognitive knowledge that the user needs and lacks. This knowledge extends to the user's energy level, energy allocation strategies and task requirements.
    - *Task Requirements*: the energetic demands of each tasks which depend on a lot of factors and the prevailing user context, making them hard to measure accurately.
-   - *Requirement Error Correction*: Contextualization
-      - User Feedback: Pre-done tasks and Finished Tasks (Kanban Board)
-      - LLM: Task Genericity and Task Comparability (LLM Eligibility) -> Specific Prompting, Fine-Tuning or RAG
+   - *Requirement Error Correction*: User-Contextualization and Metamodeling
+      - User Feedback: Finished Tasks (Kanban Board)
+      - LLM: Divide-and-Conquer Prompting, Fine-Tuning or RAG
       - External Database
+   - *Task Metamodel*:
+      1- Skill Overlap/Transferability (Transfer Theory): The extent to which existing skills can be reused in the task.
+      2- Learning Curve:  How steep the initial difficulty is and how quickly proficiency can be achieved.
+      3- Priority: How closely the task aligns with the user’s immediate or future goals.
+      4- Community and Ecosystem:  The size, quality, and activity of the community and available resources for the task.
+      5- Depth vs. Breadth: Whether the task requires exploring a few concepts deeply or many concepts broadly.
+      6- Relevance to Current Trends: How "cutting-edge" or in-demand the skill is in the market.
 - **System Output**: 
    - Energy-Priority Aligned Tasks i.e. tasks sorted accoridngly to the user's priority and his energy level.
    - Recommendation: LLM-generated piece of advice concerning energy allocation strategies based on the provided optimal tasks list.
@@ -71,20 +82,23 @@ The smart task manager automates energy allocation strategies by aligning estima
 ![Physical Architecture](diagrams/Physical%20Architecture.jpeg)
 ### Components Analysis: 
 - **User**: anyone engaged in a multitude of tasks but lacks a good model of: his own energy level, energy allocation strategies, task requirements.
-- **Interface**: The user submits his data composed of his estimated energy and a task list ordered by priority: Options (Discrete Data), Slider (Continuous Data).
+- **Data Interface**: The user submits his data composed of his estimated energy and a task list ordered by priority: Options (Discrete Data), Slider (Continuous Data).
 - **Scale**: The scale used to compute the weighted average score of energy level and task requirements: Likert Scale (Numeric Discrete), Percentage (Numeric Continuous), Categorical (Nominal Discrete)
 - **Energy Orthogonalization Function**: this function maximizes user information feedback based on the orthogonal superposition principle.
 - **Energy Scoring Function**: this function compounds the results of the energy orthogonalization function into a weighted average or sum.
-- **Energy Threshold Function**: this function classifies the result of the energy scoring function into an energy category from low to high
+- **Energy Threshold Function**: this function classifies the result of the energy scoring function into an energy category from low to high -> this function may end up undoing the value of the orthogonalization method because it abstracts all modularity into one category causing thereby information loss.
 - **Task Orthogonalization Function**: this function maximizes task requirement information based on the orthogonal superposition principle.
-- **Requirement Scoring Function**: this function compounds the results of the task orthogonalization function into a weighted average or sum
-- **Requirement Threshold Function**: this function classifies the result of the task scoring function into an task required energy category from low to high
+- **Requirement Scoring Function**: this function compounds the results of the task orthogonalization function into a weighted average or sum 
+- **Requirement Threshold Function**: this function classifies the result of the task scoring function into an task required energy category from low to high -> this function may end up undoing the value of the orthogonalization method because it abstracts all modularity into one category causing thereby information loss.
 - **Task Requirements**: the energetic demands of each tasks which depend on a lot of factors and the prevailing context, making them hard to measure accurately. Technically, the task requirements is stored in a dynamic database that changes with human-feedback.
 - **AI Agent**: the role of the AI Agent is to contextualize the task requirement database to fit the user-context (user input data). To do so, it checks whether there is a pre-existing human feedback on the database (Fine-tuning or RAG), otherwise it generates task requirement itself (specific prompting). This process goes from initial prompting to eventual Fine-tuning or RAG.
 - **Optimal Task Button**: the user clicks on this button to redirect towards an interface that displays the optimally aligned task list with his energy level as well as priority.
 - **Kanban Board**: the optimal task list is organized according to a gamified Kanban board.
 - **Human-in-the-Loop and Network Effects**: this subarchitecture exploits the positive network effects of other users feedback to allow for scalability and impact.
 - **User Feedback On Finished Tasks**: the user provides feedback on the task difficulty (or required energy) after finishing it.
+   - *Task difficulty*
+   - *Time taken* (user-given or system-given)
+   - *Satisfaction with the learning outcome*
 - **Context-Friendly Human Feedback**: task labeling based on context-friendly human feedback represented by the task required energy on the user initial energy ratio -> a supervised learning model is utilized to match each task-user energy ratio to a task label (user-free task required energy) or a symbolic model using a JSON dict (this process is called task decontextualization, and its purpose is scalability to facilitate network effects)
 - **Recommendation Button**: the user clicks on this button to get recommendations on energy allocation strategies for the optimal task list provided.
 - **QA Conversational Interface**: the LLM enters into a chat conversation with the user about each task in the optimal tasks list (ideally, fine-tuning or RAG should be used in this step) ->  With enough human-in-the-loop (enough network effects), the task requirements database gets increasingly filled to eventually allow for the transition from specific prompting to fine-tuning and/or RAG.
