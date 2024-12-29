@@ -17,13 +17,10 @@ memory = ConversationBufferMemory(memory_key='history', return_messages=True)
 
 
 # Import prompts from prompts.py
-EP = prompts.Energy_Prompt_Template
-TP = prompts.Task_Prompt_Template
+TR = prompts.TaskReq
+STR = prompts.SingleTaskReq
 AP = prompts.Allocation_Prompt_Template
 OP = prompts.Output_Prompt_Template
-RP = prompts.Retain_Prompt_Template
-TRP = prompts.TaskRequer
-
 
 
 def continue_conversation(user_message: str): #query type: string (user message)
@@ -39,7 +36,7 @@ def continue_conversation(user_message: str): #query type: string (user message)
 
 # Run LLM Query for Task Requirement Agent
 def run_task_query(query: str): #query type: list of strings or stringified list of strings (tasks list)
-    Task_Agent = LLMChain(llm=llm,prompt=TP, verbose=True)
+    Task_Agent = LLMChain(llm=llm,prompt=TR, verbose=True)
     response = Task_Agent.run({"tasks_list": query})
     # Log the response into memory
     memory.chat_memory.add_user_message(f"Task List Query: {query}")
@@ -47,11 +44,11 @@ def run_task_query(query: str): #query type: list of strings or stringified list
     return response
 
 # Run LLM Query for Task Requirement Agent
-def run_taskreq_query(query: str): #query type: list of strings or stringified list of strings (tasks list)
-    Task_Agent = LLMChain(llm=llm,prompt=TRP, verbose=True)
-    response = Task_Agent.run({"tasks_list": query})
+def run_single_task_query(query: str): #query type: list of strings or stringified list of strings (tasks list)
+    Task_Agent = LLMChain(llm=llm,prompt=STR, verbose=True)
+    response = Task_Agent.run({"task": query})
     # Log the response into memory
-    memory.chat_memory.add_user_message(f"Task List Query: {query}")
+    memory.chat_memory.add_user_message(f"Task Query: {query}")
     memory.chat_memory.add_ai_message(response)
     return response
 

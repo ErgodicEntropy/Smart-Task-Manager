@@ -49,6 +49,7 @@ The smart task manager automates energy allocation strategies by aligning estima
 - **User**: anyone engaged in a multitude of tasks but lacks a good model of: his own energy level, energy allocation strategies, task requirements.
    - *Goals (Priority)*
    - *Current skills*
+   - *Work Experience* e.g. CV
    - *Energy levels*
 
 - **Subjective Factors**: these are factors that inevitably emanates from the user.
@@ -57,7 +58,9 @@ The smart task manager automates energy allocation strategies by aligning estima
 - **System Inputs**:
    - *Estimated Energy*: the energy esimated by the user. Given that this esimation is subject to bias and lack of good representation, Sensitivity Analysis is needed to ensure that the system is well-conditioned (low condition number) i.e. robust, or that the energy estimation process is enhanced with categorical nudges and choices (user skills can also be used instead of user energy but that changes the logic of the app).
    - *Estimation Error Correction*: 
+      - Magic Insight (Penultimate Step): one parameter to rule them all e.g. energy/impact ratio.
       - Orthogonalization Method: Divide-and-Conquer the energy-specific question into subquestions each of which concerning a domain and/or axis of energy measurement which is orthogonal to every other subquestion (zero covariance or overlap implies maximum user information feedback) e.g. Intellectual Energy (e.g. Cognitive Energy: Clarity of Thought, Focus/Attention, Mental Fatigue. Task Readiness, Cognitive Load), Psychological Energy (e,g. Mental Energy: Motivation, Stress Level, Emotional State), Physical Energy, Temporal Energy (Circadian Rhythm (Peak Times/Cortisol Level), Energy Trends), Environmental Energy (External Stimulation), Social Energy (Interaction Energy), Behavioral Energy. 
+      The limits of orthogonalization is recursion dilemma and saturation effects (diminishing returns if too many variables used).
       - Pilot Test: a quick, gamified test to measure energy. The problem with this method is that the measures do not prefigure the task unless the test is the task itself (performance actualism) which defeats the logic due to the task-specific nature of the test for its effectiveness. However, user-specific (task-free) tests can be conducted with the purpose of measuring user energy.
    - *Task List*: list of tasks sorted accordingly to priority, or unsorted if the user doesn't have an initial priority.
 - **Smart Task Manager System**: the STM system processes input information to generate appropriate model to be utilized by the user
@@ -66,15 +69,28 @@ The smart task manager automates energy allocation strategies by aligning estima
    - *Task Requirements*: the energetic demands of each tasks which depend on a lot of factors and the prevailing user context, making them hard to measure accurately.
    - *Requirement Error Correction*: User-Contextualization and Metamodeling
       - User Feedback: Finished Tasks (Kanban Board)
-      - LLM: Divide-and-Conquer Prompting, Fine-Tuning or RAG
+      - LLM: Divide-and-Conquer Prompting (works especially if the tasks are generic and easily comparable e.g. writing vs coding), Fine-Tuning or RAG
       - External Database
-   - *Task Metamodel*:
-      1- Skill Overlap/Transferability (Transfer Theory): The extent to which existing skills can be reused in the task.
-      2- Learning Curve:  How steep the initial difficulty is and how quickly proficiency can be achieved.
-      3- Priority: How closely the task aligns with the user’s immediate or future goals.
-      4- Community and Ecosystem:  The size, quality, and activity of the community and available resources for the task.
+   - *Task Metamodel*: the metamodel variables can either be solely task-specific, or user-task-specific and they should also pertain to abstract the energy required by task (they should measure, in collectivity, the energy demands of a task)
+      1- Priority: How closely the task aligns with the user immediate or future goals e.g. urgency, passion, interest, motivation.
+      2- Skill Overlap/Transferability (Transfer Theory): The extent to which existing skills can be reused in the task (a good MVP).
+      3- Learning Curve: How steep the initial difficulty is and how quickly proficiency can be achieved.
+      4- Community and Ecosystem: The size, quality, and activity of the community and available resources for the task.
       5- Depth vs. Breadth: Whether the task requires exploring a few concepts deeply or many concepts broadly.
       6- Relevance to Current Trends: How "cutting-edge" or in-demand the skill is in the market.
+      7- Task Novelty: The level of unfamiliarity or learning involved in the task
+      8- Cognitive Load/Complexity: The mental effort required to complete the task e.g. high-demand (strategic, creative) to low-demand (repetitive, mechanical)
+      9- Temporal Focus Intensity: The required focus duration for successful task completion. Examples: High (programming for hours), Moderate (cleaning a room), Low (sending a quick email).
+      10- Physical Exertion: The physical effort required for the task. Examples: High (moving furniture), Moderate (cooking), Low (writing an email).
+      11- Risk-to-Reward Balance: The potential risks involved in the task compared to its anticipated benefits. e.g.  Launching a startup (high risk, high reward) vs. updating a resume (low risk, moderate reward).
+      12- Collaboration Intensity: The degree to which the task depends on coordination with others (energy demand diffused through economies of scale) e.g. Group project (high intensity) vs. individual coding session (low intensity).
+      13- Task Duration: The typical time required to complete the task.
+      14- Task Precision: The level of accuracy or exactness required for successful task execution.
+      15- Recommended Start Time: Early Morning, Morning, Afternoon, Evening, Night, Midnight
+   - *Task Model (System Identification)*: 
+      1- System Identifier: User (user-task-specific metamodel) or AI Agent (task-specific metamodel)
+      2- Modeling Typicality
+      3- Modeling Difficulty      
 - **System Output**: 
    - Energy-Priority Aligned Tasks i.e. tasks sorted accoridngly to the user's priority and his energy level.
    - Recommendation: LLM-generated piece of advice concerning energy allocation strategies based on the provided optimal tasks list.
@@ -90,6 +106,8 @@ The smart task manager automates energy allocation strategies by aligning estima
 - **Task Orthogonalization Function**: this function maximizes task requirement information based on the orthogonal superposition principle.
 - **Requirement Scoring Function**: this function compounds the results of the task orthogonalization function into a weighted average or sum 
 - **Requirement Threshold Function**: this function classifies the result of the task scoring function into an task required energy category from low to high -> this function may end up undoing the value of the orthogonalization method because it abstracts all modularity into one category causing thereby information loss.
+- **Energy-Requirement Alignment Scoring Function (Optional)** :  this function compounds the results of the task orthogonalization function and energy orthogonalization function into a weighted average or sum to avoid orthogonalization information loss, but it requires that the orthgonalization process is user-task bijective (one-to-one metamodel equivalence)
+- **Energy-Requirement Alignment Threshold Function (Optional)**: this function classifies the result of the alignment scoring function into an alignment category (unaligned, moderately aligned, completely aligned)
 - **Task Requirements**: the energetic demands of each tasks which depend on a lot of factors and the prevailing context, making them hard to measure accurately. Technically, the task requirements is stored in a dynamic database that changes with human-feedback.
 - **AI Agent**: the role of the AI Agent is to contextualize the task requirement database to fit the user-context (user input data). To do so, it checks whether there is a pre-existing human feedback on the database (Fine-tuning or RAG), otherwise it generates task requirement itself (specific prompting). This process goes from initial prompting to eventual Fine-tuning or RAG.
 - **Optimal Task Button**: the user clicks on this button to redirect towards an interface that displays the optimally aligned task list with his energy level as well as priority.

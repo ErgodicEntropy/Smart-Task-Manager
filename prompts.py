@@ -2,74 +2,220 @@ from langchain.prompts import PromptTemplate
 
 
 
-Task_Prompt_Template = PromptTemplate(
-    input_variables=['tasks_list'],
-    template="""
-You are a helpful assistant assisting a user in understanding the energetic requirements of a list of tasks they have. The user has provided a list of tasks they need to accomplish. Your goal is to explain the energy each task may require, based on common experiences, in a friendly, empathetic, and easily understandable way.
+                    
+
+
+SingleTaskReq = PromptTemplate(input_variables=['task'], template=
+"""
+
+You are a helpful assistant tasked with analyzing a task provided by the user. Your role is to assess the energetic requirements for the task and return a JSON dictionary containing specific information about it in a structured format.
+
+For the task provided, return it as an object with the following properties:
+- cognitive_load: The cognitive demand of the task. This must be strictly one of the following categories:
+    - "extremely low"
+    - "low"
+    - "moderate"
+    - "high"
+    - "extremely high"
+- physical_exertion: The physical effort required for the task. This must be strictly one of the following categories:
+    - "extremely low"
+    - "low"
+    - "moderate"
+    - "high"
+    - "extremely high"
+- task_duration: The approximate amount of time the task requires.
+    - "extremely low"
+    - "low"
+    - "moderate"
+    - "high"
+    - "extremely high"
+- task_precision: The level of accuracy or detail required for the task.
+    - "extremely low"
+    - "low"
+    - "moderate"
+    - "high"
+    - "extremely high"
+- collaboration_intensity: The level of collaboration required for the task.
+    - "extremely low"
+    - "low"
+    - "moderate"
+    - "high"
+    - "extremely high"
+
+Please note:
+- Be strict with the categories to ensure consistency in the output, as the values will be used programmatically.
+- Make sure that the values given (extremely low, low, moderate, high, extremely high) are in lower-case!!!!
+- Provide a general assessment based on common experiences for the task while acknowledging that individual perceptions of energy levels may vary.
+
+Here is the task provided by the user:
+{task}
+
+Your response should strictly adhere to the following JSON format:
+{
+    "content": "Task description",
+    "cognitive_load": "low",
+    "physical_exertion": "low",
+    "task_duration": "low",
+    "task_precision": "moderate",
+    "collaboration_intensity": "low"
+}
+
+Ensure the task is represented in the JSON dictionary. If additional information about the task seems unclear, make a reasonable assumption based on common experience and ensure all parameter values are strictly one of the allowed categories. Be concise in your response, returning only the JSON object.
+
+---
+
+Here is an example of your expected output:
+{
+    "content": "Go for a morning jog in the park",
+    "cognitive_load": "low",
+    "physical_exertion": "high",
+    "task_duration": "moderate",
+    "task_precision": "low",
+    "collaboration_intensity": "extremely low"
+}
+
+Please process the task and return the structured JSON response.
+Ensure that only this exact JSON structure is output, and NOTHING ELSE. Your response should contain NO additional phrases, explanations, or commentary. Only print the JSON as shown in the template above, without adding anything else.
+Your response is a clear-cut, structured JSON dictionary. JUST PRINT THE JSON AND NOTHING ELSE!!!!!!!
+
+""")
+
+TaskReq = PromptTemplate(input_variables=['tasks_list'], template=
+"""
+
+You are a helpful assistant tasked with analyzing a list of tasks provided by the user. Your role is to assess the energetic requirements for each task and return a JSON dictionary containing specific information about each task in a structured format. 
+
+For each task in the list, return it as an object with the following properties:
+- cognitive_load: The cognitive demand of the task. This must be strictly one of the following categories:
+    - "extremely low"
+    - "low"
+    - "moderate"
+    - "high"
+    - "extremely high"
+- physical_exertion: The physical effort required for the task. This must be strictly one of the following categories:
+    - "extremely low"
+    - "low"
+    - "moderate"
+    - "high"
+    - "extremely high"
+- task_duration: The approximate amount of time the task requires.
+    - "extremely low"
+    - "low"
+    - "moderate"
+    - "high"
+    - "extremely high"
+- task_precision: The level of accuracy or detail required for the task.
+    - "extremely low"
+    - "low"
+    - "moderate"
+    - "high"
+    - "extremely high"
+- collaboration_intensity: The level of collaboration required for the task.
+    - "extremely low"
+    - "low"
+    - "moderate"
+    - "high"
+    - "extremely high"
+
+
+Please note:
+- Be strict with the categories to ensure consistency in the output, as the values will be used programmatically.
+- Make sure that the values given (extremely low, low, moderate, high, extremely high) are in lower-case !!!!
+- Provide a general assessment based on common experiences for each task while acknowledging that individual perceptions of energy levels may vary.
 
 Here is the list of tasks provided by the user:
 {tasks_list}
 
-For each task in the list, kindly explain the following:
-- The energy level that may typically be required for the task.
-- Whether the task requires high, moderate, or low energy.
-- If the task may be mentally demanding, physically tiring, or both.
-- Offer tips on how to tackle the task based on its energy requirement (e.g., how to prepare, take breaks, or pace yourself).
+Your response should strictly adhere to the following JSON format:
+[
+        {{
+            "content": "Task description",
+            "cognitive_load": "low",
+            "physical_exertion": "low",
+            "task_duration": "low",
+            "task_precision": "moderate",
+            "collaboration_intensity": "low"
+        }},
+        {{
+            "content": "Task description",
+            "cognitive_load": "high",
+            "physical_exertion": "moderate",
+            "task_duration": "high",
+            "task_precision": "high",
+            "collaboration_intensity": "low"
+        }},
+        {{
+            "content": "Task description",
+            "cognitive_load": "moderate",
+            "physical_exertion": "high",
+            "task_duration": "moderate",
+            "task_precision": "moderate",
+            "collaboration_intensity": "moderate"
+        }}
+]
 
-Your tone should be supportive and understanding, helping the user feel confident about approaching these tasks. Be mindful that energy levels vary from person to person, so offer general advice but also acknowledge that each person’s experience might differ.
+Ensure all tasks in the list are represented in the JSON dictionary. If additional information about a task seems unclear, make a reasonable assumption based on common experience and ensure all parameter values are strictly one of the allowed categories. Be concise in your response, returning only the JSON object.
 
-Please generate an HTML table as output, with the following columns:
-- **content**: A short description of the task (e.g., "Make the bed", "Go for a walk").
-- **energy_required**: The energy level required for the task (use one of the following categories: "extremely low", "low", "moderate", "high", "extremely high").
-- **preparation**: A brief description of what preparation or pacing might be needed (e.g., "Take breaks", "Prepare a plan").
-- **task_type**: Mentally, physically, or both demanding (e.g., "Physical", "Mental", "Both").
-- **recommended_start_time**: A suggested time for the user to start the task (e.g., "Morning", "Afternoon").
+---
+Here is an example of your expected output:
+[
+        {{
+            "content": "Go for a morning jog in the park",
+            "cognitive_load": "low",
+            "physical_exertion": "high",
+            "task_duration": "moderate",
+            "task_precision": "low",
+            "collaboration_intensity": "extremely low"
+        }},
+        {{
+            "content": "Complete the financial analysis report",
+            "cognitive_load": "high",
+            "physical_exertion": "low",
+            "task_duration": "high",
+            "task_precision": "high",
+            "collaboration_intensity": "low"
+        }},
+        {{
+            "content": "Plan a weekend outing",
+            "cognitive_load": "moderate",
+            "physical_exertion": "low",
+            "task_duration": "moderate",
+            "task_precision": "moderate",
+            "collaboration_intensity": "moderate"
+        }},
+        {{
+            "content": "Clean and organize the garage",
+            "cognitive_load": "low",
+            "physical_exertion": "high",
+            "task_duration": "high",
+            "task_precision": "moderate",
+            "collaboration_intensity": "extremely low"
+        }},
+        {{
+            "content": "Learn a new programming concept",
+            "cognitive_load": "high",
+            "physical_exertion": "low",
+            "task_duration": "moderate",
+            "task_precision": "high",
+            "collaboration_intensity": "extremely low"
+        }},
+        {{
+            "content": "Cook a three-course dinner",
+            "cognitive_load": "moderate",
+            "physical_exertion": "moderate",
+            "task_duration": "high",
+            "task_precision": "high",
+            "collaboration_intensity": "low"
+        }}
+]
 
-Make sure the table looks neat and is easy to read in HTML format.
+Please process the task list and return the structured JSON response.
+Ensure that only this exact JSON structure is output, and NOTHING ELSE. Your response should contain NO additional phrases, explanations, or commentary. Only print the JSON as shown in the template above, without adding anything else.
+Your response is a clear-cut, structured JSON dictionary. JUST PRINT THE JSON AND NOTHING ELSE!!!!!!!
 
-Here is an example of the table format:
-<table>
-  <thead>
-    <tr>
-      <th>Content</th>
-      <th>Energy Required</th>
-      <th>Preparation</th>
-      <th>Task Type</th>
-      <th>Recommended Start Time</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Make the bed</td>
-      <td>Low</td>
-      <td>Take breaks</td>
-      <td>Physical</td>
-      <td>Morning</td>
-    </tr>
-    <tr>
-      <td>Go for a walk</td>
-      <td>Moderate</td>
-      <td>Wear comfortable shoes</td>
-      <td>Physical</td>
-      <td>After morning meal</td>
-    </tr>
-    <tr>
-      <td>Write a report</td>
-      <td>High</td>
-      <td>Plan ahead</td>
-      <td>Mental</td>
-      <td>Afternoon</td>
-    </tr>
-  </tbody>
-</table>
-
-Please go through each task and explain what kind of energy it might need, how it could feel, and offer supportive suggestions on how to manage energy while doing them.
-"""
-)
+""")
 
 
-
-                    
 
 Allocation_Prompt_Template = PromptTemplate(
     input_variables=['tasks_list'],
@@ -105,97 +251,6 @@ Allocation_Prompt_Template = PromptTemplate(
     
                                 """)
 
-TaskRequer = PromptTemplate(input_variables=['tasks_list'], template=
-"""
-
-You are a helpful assistant tasked with analyzing a list of tasks provided by the user. Your role is to assess the energetic requirements for each task and return a JSON dictionary containing specific information about each task in a structured format. 
-
-For each task in the list, return it as an object with the following properties:
-- content: A short description of the task (e.g., "Make the bed", "Go for a walk").
-- energy_required: The energy level required for the task. This must be strictly one of the following categories: 
-  - "extremely low"
-  - "low"
-  - "moderate"
-  - "high"
-  - "extremely high"
-- preparation: A brief description of what preparation or pacing might be needed (e.g., "Take breaks", "Prepare a plan").
-- task_type: Mentally, physically, or both demanding (e.g., "Physical", "Mental", "Both").
-- recommended_start_time: A suggested time for the user to start the task (e.g., "Morning", "Afternoon").
-
-Please note:
-- Be strict with the energy_required categories to ensure consistency in the output, as the values will be used programmatically.
-- Provide a general assessment based on common experiences for each task while acknowledging that individual perceptions of energy levels may vary.
-
-Here is the list of tasks provided by the user:
-{tasks_list}
-
-Your response should strictly adhere to the following JSON format:
-[
-    {{
-        "content": "Task description", "energy_required": "low", "preparation": "Take it easy", "task_type": "Physical", "recommended_start_time": "Morning"
-    }},
-    {{
-        "content": "Task description", "energy_required": "moderate", "preparation": "Prepare a plan", "task_type": "Mental", "recommended_start_time": "Afternoon"
-    }},
-    {{
-        "content": "Task description", "energy_required": "high", "preparation": "Take breaks", "task_type": "Both", "recommended_start_time": "Evening"
-    }}
-]
-
-Ensure all tasks in the list are represented in the JSON dictionary. If additional information about a task seems unclear, make a reasonable assumption based on common experience and ensure the energy_required value is strictly one of the allowed categories. Be concise in your response, returning only the JSON object.
-
----
-
-Here’s an example of your expected output:
-[
-    {{
-        "content": "Go for a morning jog in the park",
-        "energy_required": "low",
-        "preparation": "Wear comfortable shoes and stretch lightly",
-        "task_type": "Physical",
-        "recommended_start_time": "Morning"
-    }},
-    {{
-        "content": "Complete the financial analysis report",
-        "energy_required": "moderate",
-        "preparation": "Gather all financial data and review last month’s report",
-        "task_type": "Mental",
-        "recommended_start_time": "Afternoon"
-    }},
-    {{
-        "content": "Plan a weekend outing",
-        "energy_required": "high",
-        "preparation": "Research destinations and activities, and organize travel arrangements",
-        "task_type": "Both",
-        "recommended_start_time": "Evening"
-    }},
-    {{
-        "content": "Clean and organize the garage",
-        "energy_required": "high",
-        "preparation": "Wear gloves and set aside containers for sorting items",
-        "task_type": "Physical",
-        "recommended_start_time": "Morning"
-    }},
-    {{
-        "content": "Learn a new programming concept",
-        "energy_required": "moderate",
-        "preparation": "Find reliable learning resources and allocate focused time",
-        "task_type": "Mental",
-        "recommended_start_time": "Afternoon"
-    }},
-    {{
-        "content": "Cook a three-course dinner",
-        "energy_required": "high",
-        "preparation": "Prepare ingredients and ensure kitchen tools are ready",
-        "task_type": "Both",
-        "recommended_start_time": "Evening"
-    }}
-]
-
-Please process the task list and return the structured JSON response.
-Ensure that only this exact JSON structure is output, and NOTHING ELSE. Your response should contain NO additional phrases, explanations, or commentary. Only print the JSON as shown in the template above, without adding anything else.
-Your response is a clear-cut, structured JSON dictionary. JUST PRINT THE JSON AND NOTHING ELSE!!!!!!!
-""")
 
 Output_Prompt_Template = PromptTemplate(input_variables=['context'], template="""
 

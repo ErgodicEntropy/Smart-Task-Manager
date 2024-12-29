@@ -52,33 +52,54 @@
         </thead>
         <tbody>
             {% for task in optimal_task_list %}
-                <tr class="task-row" id="task-{{ loop.index }}">
-                    <td class="{% if task.finished %}completed{% endif %}">{{ task.content }}</td>
-                    <td>{{ task.energy_required }}</td>
-                    <td>{{ task.preparation }}</td>
-                    <td>{{ task.task_type }}</td>
-                    <td>{{ task.recommended_start_time }}</td>
-                    <td>
-                        <a href="#" class="todo-button" onclick="markAsToDo('{{ loop.index }}')">To Do</a><br>
-                    </td>    
-                    <td>
-                        <a href="#" class="doing-button" onclick="markAsDoing('{{ loop.index }}')">Doing</a><br>
-                    </td>    
-                    <td>
-                        <a href="#" class="done-button" onclick="markAsDone('{{ loop.index }}')">Done</a><br>
-                    </td>    
+            <tr class="task-row" id="task-{{ loop.index }}">
+                <td class="{% if task.finished %}completed{% endif %}">{{ task.content }}</td>
+                <td>{{ task.energy_required }}</td>
+
+                <td>
+                    <a href="/recommendation/{{ task.id }}">Get Recommendations</a><br>
+                </td>    
+
+                <!-- Kanban Board -->
+                <td>
+                    <a href="#" class="todo-button" onclick="markAsToDo('{{ loop.index }}')">To Do</a><br>
+                </td>    
+                <td>
+                    <a href="#" class="doing-button" onclick="markAsDoing('{{ loop.index }}')">Doing</a><br>
+                </td>    
+                <td>
+                    <a href="#" class="done-button" onclick="markAsDone('{{ loop.index }}')">Done</a><br>
+                </td>    
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 
     <!-- Chat Conversation Form (to send user message) -->
-    <form action="/recommendation" method="GET">
+    <!-- <form action="/recommendation" method="GET">
         <input type="submit" value="Get Recommendations!">
-    </form> 
+    </form>  -->
 </div>
 
-<!-- Kanban Board -->
+<script>
+    function markAsFinished(taskId) {
+        // Find the task row by its ID
+        const taskRow = document.getElementById('task-' + taskId);
+        const taskContent = taskRow.querySelector('td');
+
+        // Mark the task as finished (adding the class and applying the effect)
+        taskRow.classList.add('finished');
+        taskContent.classList.add('completed');
+
+        // Optionally, change the button to reflect the completed state
+        const finishButton = taskRow.querySelector('.finish-button');
+        finishButton.innerHTML = 'Completed';
+        finishButton.style.backgroundColor = '#808080';
+        finishButton.style.cursor = 'not-allowed';
+    }
+</script>
+
+<!-- Kanban Board: implement a timer for the doing board unless the user feedbacks the time required for that task himself -->
 <script>
     function markAsToDo(taskId) {
         const taskRow = document.getElementById('task-' + taskId);

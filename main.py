@@ -8,6 +8,17 @@ from flask import Flask, render_template, request, redirect, session, flash, url
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
+
+def extract_json(data_str): #stripped LLM Response
+    try:
+        n = data_str.index('[')
+        m = data_str.index(']')
+        return json.loads(data_str[n:m+1])
+    except (ValueError, json.JSONDecodeError) as e:
+        print(f"Error extracting JSON: {e}")
+        return {}
+    
+    
 def daycategory(hour):
     if 5 <= hour < 9:
         return "Early Morning"
@@ -69,9 +80,6 @@ class UpdatedToDo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(200), nullable=False)
     energy_required = db.Column(db.String(200), nullable=False)
-    preparation = db.Column(db.String(200), nullable=False)
-    task_type = db.Column(db.String(200), nullable=False)
-    recommended_start_time = db.Column(db.String(200), nullable=False)
     date = db.Column(db.DateTime, default=datetime.now())
 
     def __repr__(self):
@@ -222,26 +230,62 @@ def Sort():
             distancedict[level] = UEmetric - re_energy_dist[level]
 
         tasks_list_str = session.get('tasks_list')
-        tasklist = tasks_list_str.split(',')
-        #Task Requirement
-        task_info_dict = agents.run_taskreq_query(tasks_list_str).strip()
-        n = task_info_dict.index('[')
-        m = task_info_dict.index(']')
-        task_info_dict = task_info_dict[n:m+1]
-        jsontaskdict = json.loads(task_info_dict)
+        # For divide-and-conquer prompting (LLM Error Correction with Input Size Minimization) -> Almost-Accuracy-free Format Problem: For this to work, the json response should be more creative than categorical energy e.g. low, moderate..etc
+        # tasklist = tasks_list_str.split(',')
+        # taskenergyjson = []
+        # for task in tasklist:                
+        #     single_task_energy_dict = agents.run_single_task_query(task).strip()
+        #     n = single_task_energy_dict.index('[')
+        #     m = single_task_energy_dict.index(']')
+        #     single_task_energy_dict = single_task_energy_dict[n:m+1]
+        #     singletaskenergyjson = json.loads(single_task_energy_dict)
+        #     taskenergyjson.append(singletaskenergyjson)
+        # taskenergyjson = taskenergyjson.to_dict() #convert the list to a json dict
 
-        task_content = [task['content'] for task in jsontaskdict]
-        task_list = task_content
+        #Requirement Orthogonalization function
+        task_energy_dict = agents.run_task_query(tasks_list_str).strip()
+        n = task_energy_dict.index('[')
+        m = task_energy_dict.index(']')
+        task_energy_dict = task_energy_dict[n:m+1]
+        taskenergyjson = json.loads(task_energy_dict)
+
+        #Requirement Scoring Function
+        tasksdata = [] #list of content-energy dictionaries
+        weights = np.random.pareto(2.0,K)
+        weights /= weights.sum()
+        for task in taskenergyjson:
+            energyvals = [task["cognitive_load"], task["physical_exertion"], task["task_duration"], task["task_precision"], task["collaboration_intensity"]]
+            K = len(energyvals) # K = L - 1 (L is the task metamodel complexity)
+            weighted_sum = 0 
+            for k in range(K):
+                weighted_sum += weights[k]*energy_dist[energyvals[k]]
+            energy_value = weighted_sum/K
+            #Requirement Threshold Function
+            if energy_value >= energy_dist["extremely high"]:
+                EL = "extremely high"
+            elif energy_value >= energy_dist["high"]:
+                EL = "high"
+            elif energy_value >= energy_dist["moderate"]:
+                EL = "moderate"
+            elif energy_value >= energy_dist["low"]:
+                EL = "low"
+            else:
+                EL = "extremely low"
+            
+            tasksdata.append({'content':task["content"], 'energy_required':EL})
+        
+
+        task_list = [task['content'] for task in tasksdata] #task_content (task:dict)
         N = len(task_list)
-        priority = [N-task_list.index(task) for task in task_list]
+        priority = [N-task_list.index(task) for task in task_list] # task:str
         PriorityValue = {task_list[k]: priority[k] for k in range(len(priority))}
 
         UpdatedTasks = []
-        compatible_tasks = list(filter(lambda task: task['energy_required'] == UE, jsontaskdict))
+        compatible_tasks = list(filter(lambda task: task['energy_required'] == UE, tasksdata))
         for task in compatible_tasks:
             UpdatedTasks.append(task)
 
-        incompatible_tasks = list(filter(lambda task: task['energy_required'] != UE, jsontaskdict))
+        incompatible_tasks = list(filter(lambda task: task['energy_required'] != UE, tasksdata))
         ProximityValue = {task['content']: distancedict[task['energy_required']] for task in incompatible_tasks}
         Proximity_Priority_Value = {task['content']: PriorityValue[task['content']] + ProximityValue[task['content']] for task in incompatible_tasks}
 
@@ -263,10 +307,7 @@ def Sort():
             new_task = UpdatedToDo(
                 content=UpdatedTasks[k]['content'],
                 energy_required=UpdatedTasks[k]['energy_required'],
-                preparation=UpdatedTasks[k]['preparation'],
-                task_type=UpdatedTasks[k]['task_type'],
-                recommended_start_time=UpdatedTasks[k]['recommended_start_time']
-            )
+                date = datetime.now()) #date and index correlate -> make sure that the date is very specific to allow for ordering
             try:
                 db.session.add(new_task)
                 db.session.commit()
@@ -275,19 +316,26 @@ def Sort():
                 flash(f"llm output problem {e}", 'error')
                 print(f"Error adding task: {e}")
 
-    optimal_task_list = UpdatedToDo.query.order_by(UpdatedToDo.date).all()
+    optimal_task_list = UpdatedToDo.query.order_by(UpdatedToDo.date).all() #early comes first
     print("------------------")
     print("Optimal Task List:", optimal_task_list)
     print("------------------")
-    session['optimal_task_list'] = ','.join([task.content for task in optimal_task_list])
     return render_template('output.html', optimal_task_list=optimal_task_list)
 
 
-@app.route('/recommendation', methods=['POST','GET'])
-def recommend():
+@app.route('/recommendation/<int:id>', methods=['POST','GET'])
+def recommend(id):
+    task = UpdatedToDo.query.get_or_404(id)
+    if request.method == 'POST':
+        task.content = request.form['content'] # not a string
+        try:
+            db.session.commit()
+            return redirect('/output') #redirect the user to the optimal task table once he CLICKS on CHAT DONE button
+        except:
+            return "There was an error updating your task"
+
     
-    
-    render_template('recommendation.html')
+    return render_template('recommendation.html', task=task)
     
 
 
