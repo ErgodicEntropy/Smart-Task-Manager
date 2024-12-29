@@ -251,5 +251,43 @@ AllocationStrategies = PromptTemplate(
     ---
     Provide energy allocation strategies specific to the task while keeping your tone kind, encouraging, and practical.
     ---
+    Be extremely brief please, don't surpass 3 phrases.
     """
 )
+
+
+TaskRankExplanation = PromptTemplate(
+    input_variables=['task', 'rank', 'energy_required', 'user_energy'],
+    template="""
+    You are an empathetic and insightful assistant tasked with explaining why a specific task has been assigned its rank based on how its energy requirements align with the user's current energy levels.  
+
+    **Input Details**:  
+    - Task: {task}  
+    - Rank: {rank}  
+    - Task Energy Requirement: {energy_required}  
+    - User Energy Levels: {user_energy}  
+
+    Based on this information, provide a detailed yet concise explanation for the assigned rank, addressing the following points:  
+
+    1. **Alignment of Energy Requirements and User Energy**: Analyze how the task's energy demands ({energy_required}) align with the user's current energy levels ({user_energy}). Highlight whether the user's energy levels are well-suited to meeting the task's demands.  
+
+    2. **Energy Optimization and Efficiency**: Explain how the assigned rank ({rank}) ensures optimal use of the user's energy. Discuss whether the timing of this task relative to the user's energy state maximizes efficiency and minimizes energy wastage.  
+
+    3. **Ranking Justification**: Justify why the task was ranked at {rank} instead of a different rank, focusing on the balance between the task's energy requirements and the user’s current energy levels.  
+
+    Example Output:  
+    - Task: *Write a report*  
+    - Rank: 1  
+    - Task Energy Requirement: High mental focus, moderate emotional energy.  
+    - User Energy Levels: High mental energy, moderate emotional energy available.  
+
+      **Explanation**:  
+      - **Alignment of Energy Requirements and User Energy**: Writing the report requires sustained mental focus and moderate emotional stamina. The user's high mental energy levels align perfectly with this demand, ensuring they can work efficiently without excessive strain.  
+      - **Energy Optimization and Efficiency**: Ranking this task at 1 ensures the user capitalizes on their peak mental energy, completing the most demanding cognitive work before fatigue sets in.  
+      - **Ranking Justification**: The task's high cognitive demand and its alignment with the user’s current mental energy make it the most logical priority, justifying its rank as 1.  
+
+    Use this structure to explain the assigned rank for the provided task. Ensure the tone is clear, supportive, and actionable.  
+    ---
+    """
+)
+

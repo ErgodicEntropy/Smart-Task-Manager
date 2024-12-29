@@ -31,6 +31,35 @@
         .task-row.finished {
             background-color: #e0ffe0;
         }
+
+        .recommendation {
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+    
+        .recommendation:hover {
+            background-color: #007B9E;
+        }
+
+        .explain {
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+    
+        .explain:hover {
+            background-color: #007B9E;
+        }
+
     </style>
 {% endblock %}
 
@@ -45,7 +74,9 @@
                 <th>Task</th>
                 <th>Energy Requirement</th>
                 <th>AI Assistance</th>
-                <th>State</th>
+                <th>Rank Explanation</th>
+                <th>Doing State</th>
+                <th>Done State</th>
             </tr>
         </thead>
         <tbody>
@@ -55,7 +86,11 @@
                 <td>{{ task.energy_required }}</td>
 
                 <td>
-                    <a href="/recommendation/{{ task.id }}"  style="color: blue; text-decoration: underline;">Recommendation</a><br>
+                    <a href="/recommendation/{{ task.id }}"  class="recommendation">Recommendation</a><br>
+                </td>    
+
+                <td>
+                    <a href="/explanation/{{ task.id }}"  class="explain">Explain Rank</a><br>
                 </td>    
 
                 <!-- Kanban Board -->
@@ -69,11 +104,6 @@
             {% endfor %}
         </tbody>
     </table>
-
-    <!-- Chat Conversation Form -->
-    <!-- <form action="/explanation" method="POST">
-        <input type="submit" value="Explain Why this rank?">
-    </form>  -->
 </div>
 
 

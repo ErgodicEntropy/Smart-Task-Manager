@@ -171,7 +171,13 @@ def finalize_tasks():
 @app.route('/data', methods=['POST', 'GET'])
 def submit_form():
     if request.method == "POST":
-        energy_dist = {"extremely high": 90, "high": 70, "moderate": 50, "low": 30, "extremely low": 10}
+        energy_dist ={
+            'extremely low': 0,
+            'low': 1.1879440506810733,
+            'moderate': 2.7561698026964763,
+            'high': 5.017618750479866,
+            'extremely high': 6.343199292229015
+        }
         currenthour = datetime.today().hour
         day_category = daycategory(currenthour)
         data_list = [
@@ -199,7 +205,6 @@ def submit_form():
             weighted_sum += weights[k]*data_list[k]
         
         average_energy = weighted_sum/N
-
         #Energy Threshold Function
         # Determine energy level category
         if average_energy >= energy_dist["extremely high"]:
@@ -248,7 +253,14 @@ def Sort():
     """
     if request.method == "POST":
         UE = session.get('energy_level')
-        energy_dist = {"extremely high": 5, "high": 4, "moderate": 3, "low": 2, "extremely low": 1}
+        energy_dist ={
+            'extremely low': 0,
+            'low': 1.1879440506810733,
+            'moderate': 2.7561698026964763,
+            'high': 5.017618750479866,
+            'extremely high': 6.343199292229015
+        }
+
         UEmetric = energy_dist[UE]
 
         distancedict = {UE: 0}
@@ -335,6 +347,7 @@ def Sort():
             new_task = UpdatedToDo(
                 content=UpdatedTasks[k]['content'],
                 energy_required=UpdatedTasks[k]['energy_required'],
+                rank = k+1,
                 date = datetime.now()) #date and index correlate -> make sure that the date is very specific to allow for ordering
             try:
                 db.session.add(new_task)
@@ -356,9 +369,21 @@ def recommend(id):
         message = request.form['userMessage']
         resp = agents.run_allocation_query(message)         # conversationchain is needed
     return render_template('recommendation.html', task=task, resp=resp)
-    
+
 
 #Route for Rank Explanation
+@app.route('/explanation/<int:id>', methods=['POST','GET'])
+def explain(id):
+    task = UpdatedToDo.query.get_or_404(id)
+    taskname  = task.content
+    taskrank = str(task.rank)
+    taskenergyreq = task.energy_required
+    userenergy = session.get('energy_level')
+    resp = agents.run_explanation_query(taskname,taskrank,taskenergyreq,userenergy) 
+    if request.method == "POST":
+        message = request.form['userMessage']
+        resp = agents.continue_conversation(message)         # conversationchain is needed
+    return render_template('explanation.html', task=task, resp=resp)
 
 
 # Start the Flask app

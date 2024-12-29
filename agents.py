@@ -20,7 +20,7 @@ memory = ConversationBufferMemory(memory_key='history', return_messages=True)
 TR = prompts.TaskReq
 STR = prompts.SingleTaskReq
 AS = prompts.AllocationStrategies
-
+TRE = prompts.TaskRankExplanation
 
 def continue_conversation(user_message: str): #query type: string (user message)
     """
@@ -61,6 +61,20 @@ def run_allocation_query(query: str): #query type: list of strings or stringifie
     memory.chat_memory.add_ai_message(response)
     return response
 
+# Run LLM Query for Rank Explanation Agent
+def run_explanation_query(task: str, rank: str, energy_required:str, user_energy:str): #query type: list of strings or stringified list of strings (tasks list)
+    Allocation_Agent = LLMChain(llm=llm,prompt=TRE, verbose=True)
+    inputs = {
+    "task": task,
+    "rank": rank,
+    "energy_required": energy_required,
+    "user_energy": user_energy     
+    }   
+    response = Allocation_Agent.run(inputs)
+    # Log the response into memory
+    memory.chat_memory.add_user_message(f"Inputs Query: {inputs}")
+    memory.chat_memory.add_ai_message(response)
+    return response
 
 
 

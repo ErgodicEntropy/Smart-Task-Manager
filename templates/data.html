@@ -95,7 +95,7 @@
     <div class="content">
         <h1>Energy Questionnaire</h1>
         <p>Please answer the following questions to help us measure your energy levels.</p>
-        <form action="/data" method="POST">
+        <form id="energy-form" action="/data" method="POST">
             <!-- Intellectual/Cognitive Energy: Clarity of Thought, Focus/Attention, Mental Fatigue, Task Readiness, Cognitive Load -->
             <h5>Intellectual/Cognitive Energy</h5>
             <h6>Clarity of Thought:</h6> 
@@ -179,7 +179,8 @@
             <!-- Circadian Rhythm (Peak Times/Cortisol Level) -->
              <h6>Circadian Rhythm:</h6> 
             <label for="circadian_rhythm">Set your peak hours</label>
-            <select id="circadian_rhythm" name="circadian_rhythm">
+            <select id="circadian_rhythm" name="circadian_rhythm" required>
+                <option value="" disabled selected>Select Peak Hours</option>
                 <option value="Early Morning">Early Morning (5AM-9AM)</option>
                 <option value="Late Morning">Late Morning (9AM-12PM)</option>
                 <option value="Afternoon">Afternoon (12PM-5PM)</option>
@@ -190,7 +191,8 @@
             <!-- Energy Trends -->
             <h6>Energy Trend:</h6>
             <label for="trend">How do you feel your energy is changing?</label>
-            <select id="trend" name="trend">
+            <select id="trend" name="trend" required>
+                <option value="" disabled selected>Select Energy Trend</option>        
                 <option value="-1">Falling</option>
                 <option value="0">Steady</option>
                 <option value="1">Rising</option>
@@ -203,7 +205,7 @@
             <label for="external_stimulation">How supportive does your environment feel to your energy right now?</label>
             <div style="display: flex; align-items: center; gap: 10px;">
                 <span style="flex-shrink: 0;">Very Hostile</span>
-                <input type="range" id="external_stimulation" name="external_stimulation" min="0" max="100" value="50" style="flex-grow: 1;" oninput="updateExternallValue(this.value)">
+                <input type="range" id="external_stimulation" name="external_stimulation" min="0" max="100" value="50" style="flex-grow: 1;" oninput="updateExternalValue(this.value)">
                 <span style="flex-shrink: 0;">Very Friendly</span>
             </div>
             <span id="external-value">50</span>
@@ -227,8 +229,12 @@
                 <span style="flex-shrink: 0;">Very Easy</span>
             </div>
             <span id="behavior-value">50</span>
+            
+            <input type="submit" id="submit-btn" value="Submit">
+        </form>
 
-            <input type="submit" value="Submit">
+        <form action="/output" method="POST">
+            <input type="submit" value="Done">
         </form>
 
         <script>
@@ -272,14 +278,9 @@
             function updateBehaviorValue(value){
                 document.getElementById("behavior-value").textContent = value
             }
-
-        </script>
-
-
-        <form action="/output" method="POST">
-            <input type="submit" value="Done">
-        </form>
+        </script>   
 
     </div>
+    
 </body>
 </html>
