@@ -9,14 +9,30 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 
-def extract_json(data_str): #stripped LLM Response
+def extract_json(data_str:str): #stripped LLM Response
     try:
         n = data_str.index('[')
         m = data_str.index(']')
-        return json.loads(data_str[n:m+1])
+        return json.loads(data_str[n:m+1].strip())
     except (ValueError, json.JSONDecodeError) as e:
         print(f"Error extracting JSON: {e}")
         return {}
+
+def extract_JSON(data_str:str): #stripped LLM Response
+    if data_str.startswith("```json"):
+        data_str = data_str[7:]
+    if data_str.endswith("```"):
+        data_str = data_str[:-3]
+    if data_str.startswith("```"):
+        data_str = data_str[3:]
+
+    data_str = data_str.strip()
+    try:
+        return json.loads(data_str)
+    except (ValueError, json.JSONDecodeError) as e:
+        print(f"Error extracting JSON: {e}")
+        return {}
+
     
     
 def daycategory(hour):
@@ -171,7 +187,7 @@ def finalize_tasks():
 @app.route('/data', methods=['POST', 'GET'])
 def submit_form():
     if request.method == "POST":
-        energy_dist ={
+        threshold ={
             'extremely low': 0,
             'low': 1.1879440506810733,
             'moderate': 2.7561698026964763,
@@ -207,13 +223,13 @@ def submit_form():
         average_energy = weighted_sum/N
         #Energy Threshold Function
         # Determine energy level category
-        if average_energy >= energy_dist["extremely high"]:
+        if average_energy >= threshold["extremely high"]:
             energy_level = "extremely high"
-        elif average_energy >= energy_dist["high"]:
+        elif average_energy >= threshold["high"]:
             energy_level = "high"
-        elif average_energy >= energy_dist["moderate"]:
+        elif average_energy >= threshold["moderate"]:
             energy_level = "moderate"
-        elif average_energy >= energy_dist["low"]:
+        elif average_energy >= threshold["low"]:
             energy_level = "low"
         else:
             energy_level = "extremely low"
@@ -253,12 +269,19 @@ def Sort():
     """
     if request.method == "POST":
         UE = session.get('energy_level')
-        energy_dist ={
+        energy_dist = { 
+            'extremely low': 1,
+            'low': 2,
+            'moderate': 3,
+            'high': 4,
+            'extremely high': 5
+        }
+        threshold_dist ={
             'extremely low': 0,
-            'low': 1.1879440506810733,
-            'moderate': 2.7561698026964763,
-            'high': 5.017618750479866,
-            'extremely high': 6.343199292229015
+            'low': 0.1879440506810733,
+            'moderate': 0.22373788162148546,
+            'high': 0.4232223375873885,
+            'extremely high': 0.643199292229015
         }
 
         UEmetric = energy_dist[UE]
@@ -284,12 +307,14 @@ def Sort():
 
         #Requirement Orthogonalization function
         task_energy_dict = agents.run_task_query(tasks_list_str).strip()
-        n = task_energy_dict.index('[')
-        m = task_energy_dict.index(']')
-        task_energy_dict = task_energy_dict[n:m+1]
-        taskenergyjson = json.loads(task_energy_dict)
+        # n = task_energy_dict.index('[')
+        # m = task_energy_dict.index(']')
+        # task_energy_dict = task_energy_dict[n:m+1]
+        # taskenergyjson = json.loads(task_energy_dict)
+        taskenergyjson = extract_json(task_energy_dict)
 
         #Requirement Scoring Function
+        energytest = []
         tasksdata = [] #list of content-energy dictionaries
         weights = np.random.pareto(2.0,5)
         weights /= weights.sum()
@@ -300,20 +325,20 @@ def Sort():
             for k in range(K):
                 weighted_sum += weights[k]*energy_dist[energyvals[k]]
             energy_value = weighted_sum/K
+            energytest.append(energy_value)
             #Requirement Threshold Function
-            if energy_value >= energy_dist["extremely high"]:
+            if energy_value >= threshold_dist["extremely high"]:
                 EL = "extremely high"
-            elif energy_value >= energy_dist["high"]:
+            elif energy_value >= threshold_dist["high"]:
                 EL = "high"
-            elif energy_value >= energy_dist["moderate"]:
+            elif energy_value >= threshold_dist["moderate"]:
                 EL = "moderate"
-            elif energy_value >= energy_dist["low"]:
+            elif energy_value >= threshold_dist["low"]:
                 EL = "low"
             else:
                 EL = "extremely low"
             
             tasksdata.append({'content':task["content"], 'energy_required':EL})
-        
 
         task_list = [task['content'] for task in tasksdata] #task_content (task:dict)
         N = len(task_list)

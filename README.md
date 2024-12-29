@@ -73,7 +73,7 @@ The smart task manager automates energy allocation strategies by aligning estima
       - External Database
    - *Task Metamodel*: the metamodel variables can either be solely task-specific, or user-task-specific and they should also pertain to abstract the energy required by task (they should measure, in collectivity, the energy demands of a task)
       1- Priority: How closely the task aligns with the user immediate or future goals e.g. urgency, passion, interest, motivation.
-      2- Skill Overlap/Transferability (Transfer Theory): The extent to which existing skills can be reused in the task (a good MVP).
+      2- Skill Overlap/Transferability (Transfer Theory): The extent to which existing skills can be reused in the task (a good [MVP](https://github.com/ErgodicEntropy/Skill-Matcher)).
       3- Learning Curve: How steep the initial difficulty is and how quickly proficiency can be achieved.
       4- Community and Ecosystem: The size, quality, and activity of the community and available resources for the task.
       5- Depth vs. Breadth: Whether the task requires exploring a few concepts deeply or many concepts broadly.
