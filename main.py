@@ -345,9 +345,6 @@ def Sort():
                 print(f"Error adding task: {e}")
 
     optimal_task_list = UpdatedToDo.query.order_by(UpdatedToDo.date).all() #early comes first
-    # print("------------------")
-    # print("Optimal Task List:", optimal_task_list)
-    # print("------------------")
     return render_template('output.html', optimal_task_list=optimal_task_list)
 
 #Route for Energy Allocation Recommendation

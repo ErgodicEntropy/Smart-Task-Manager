@@ -45,6 +45,7 @@
                 <th>Task</th>
                 <th>Energy Requirement</th>
                 <th>AI Assistance</th>
+                <th>State</th>
             </tr>
         </thead>
         <tbody>
@@ -54,19 +55,16 @@
                 <td>{{ task.energy_required }}</td>
 
                 <td>
-                    <a href="/recommendation/{{ task.id }}"> Recommendation</a><br>
+                    <a href="/recommendation/{{ task.id }}"  style="color: blue; text-decoration: underline;">Recommendation</a><br>
                 </td>    
 
                 <!-- Kanban Board -->
-                <!-- <td>
-                    <a href="#" class="todo-button" onclick="markAsToDo('{{ loop.index }}')">To Do</a><br>
-                </td>    
                 <td>
                     <a href="#" class="doing-button" onclick="markAsDoing('{{ loop.index }}')">Doing</a><br>
                 </td>    
                 <td>
-                    <a href="#" class="done-button" onclick="markAsDone('{{ loop.index }}')">Done</a><br>
-                </td>     -->
+                    <a href="#" class="finish-button" onclick="markAsFinished('{{ loop.index }}')">Finished</a><br>
+                </td>    
                 </tr>
             {% endfor %}
         </tbody>
@@ -78,60 +76,121 @@
     </form>  -->
 </div>
 
-<script>
-    function markAsFinished(taskId) {
-        // Find the task row by its ID
-        const taskRow = document.getElementById('task-' + taskId);
-        const taskContent = taskRow.querySelector('td');
-
-        // Mark the task as finished (adding the class and applying the effect)
-        taskRow.classList.add('finished');
-        taskContent.classList.add('completed');
-
-        // Optionally, change the button to reflect the completed state
-        const finishButton = taskRow.querySelector('.finish-button');
-        finishButton.innerHTML = 'Completed';
-        finishButton.style.backgroundColor = '#808080';
-        finishButton.style.cursor = 'not-allowed';
-    }
-</script>
 
 <!-- Kanban Board: implement a timer for the doing board unless the user feedbacks the time required for that task himself -->
+<!-- User Feedback on Finished Tasks -->
+
 <script>
-    function markAsToDo(taskId) {
-        const taskRow = document.getElementById('task-' + taskId);
-        taskRow.classList.remove('finished', 'doing');
-        taskRow.classList.add('todo');
+    let timers = {};
+
+    function startTimer(taskId) {
+        const startTime = Date.now();
+        timers[taskId] = startTime;
+
+        const timerDisplay = document.createElement('span');
+        timerDisplay.id = 'timer-' + taskId;
+        timerDisplay.style.marginLeft = '10px';
+        document.getElementById('task-' + taskId).appendChild(timerDisplay);
+
+        updateTimer(taskId);
+    }
+
+    function updateTimer(taskId) {
+        const timerDisplay = document.getElementById('timer-' + taskId);
+        if (!timerDisplay) return;
+
+        const elapsedTime = Date.now() - timers[taskId];
+        const seconds = Math.floor((elapsedTime / 1000) % 60);
+        const minutes = Math.floor((elapsedTime / (1000 * 60)) % 60);
+        const hours = Math.floor((elapsedTime / (1000 * 60 * 60)) % 24);
+
+        timerDisplay.innerHTML = `${hours}h ${minutes}m ${seconds}s`;
+
+        setTimeout(() => updateTimer(taskId), 1000);
+    }
+
+    function stopTimer(taskId) {
+        delete timers[taskId];
+        const timerDisplay = document.getElementById('timer-' + taskId);
+        if (timerDisplay) {
+            timerDisplay.remove();
+        }
     }
 
     function markAsDoing(taskId) {
         const taskRow = document.getElementById('task-' + taskId);
-        taskRow.classList.remove('finished', 'todo');
-        taskRow.classList.add('doing');
-    }
+        const taskContent = taskRow.querySelector('td');
 
-    function markAsDone(taskId) {
-        const taskRow = document.getElementById('task-' + taskId);
-        taskRow.classList.remove('todo', 'doing');
-        taskRow.classList.add('finished');
+        taskRow.classList.add('doing');
+        taskContent.classList.add('almost_completed');
+
+        const doingButton = taskRow.querySelector('.doing-button');
+        doingButton.innerHTML = 'Doing';
+        doingButton.style.backgroundColor = '#808080';
+        doingButton.style.cursor = 'not-allowed';
+
+        startTimer(taskId);
     }
+    
+    function getFeedback(taskId) {
+        const feedback = prompt("Please provide feedback for the task (easy, moderate, hard):");
+        if (feedback) {
+            saveFeedback(taskId, feedback);
+        }
+    }
+    
+    function saveFeedback(taskId, feedback) {
+        fetch('/save_feedback', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ taskId: taskId, feedback: feedback }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Feedback saved:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+    
+    function markAsFinished(taskId) {
+        const taskRow = document.getElementById('task-' + taskId);
+        const taskContent = taskRow.querySelector('td');
+
+        taskRow.classList.add('finished');
+        taskContent.classList.add('completed');
+        
+        const finishButton = taskRow.querySelector('.finish-button');
+        finishButton.innerHTML = 'Completed';
+        finishButton.style.backgroundColor = '#808080';
+        finishButton.style.cursor = 'not-allowed';
+
+        stopTimer(taskId);
+        getFeedback(taskId);
+    }
+    
 </script>
 
 <style>
-    .todo {
-        background-color: #ffcccc;
-        transition: background-color 0.3s ease;
-    }
-
     .doing {
-        background-color: #ffffcc;
-        transition: background-color 0.3s ease;
+        background-color: #fff3cd;
+        border-left: 5px solid #ffc107;
+        transition: background-color 0.3s ease, border-left 0.3s ease;
+        font-weight: bold;
     }
 
     .finished {
-        background-color: #ccffcc;
-        transition: background-color 0.3s ease;
+        background-color: #d4edda;
+        border-left: 5px solid #28a745;
+        transition: background-color 0.3s ease, border-left 0.3s ease;
+        text-decoration: line-through;
+        color: red;
+        font-weight: bold;
     }
+
 </style>
 
 {% endblock %}

@@ -230,19 +230,21 @@ AllocationStrategies = PromptTemplate(
     {task}
 
     For this task, kindly provide the following energy allocation strategies:
-    1. **Energy Management Tips**: Offer detailed guidance on how to approach the task with an optimal energy distribution. Specify when to exert high effort, when to ease off, and how to balance energy expenditure overall.
-    2. **Prioritization**: Explain whether the task should be tackled first, in the middle, or toward the end of the user's schedule. Base this on the typical energy demands and recovery requirements of the task.
-    3. **Pacing and Breaks**: Recommend a pacing strategy, including how to divide the task into manageable segments, and suggest when to take breaks to recharge without losing momentum.
-    4. **Optimizing Mental vs. Physical Energy**: If the task requires both mental and physical energy, suggest a specific plan to balance these demands (e.g., alternating focus-heavy periods with light physical activity).
-    5. **Motivation and Focus**: Share empathetic advice or techniques to help the user maintain motivation and avoid distractions while completing the task. Include tips for setting a positive mindset and staying productive.
+    1. **Task Segmentation Strategy**: Suggest how the user could break down the task into smaller, manageable segments or phases, and the ideal balance between segmented vs. continuous work based on the task's demands.
+    2. **Energy Conservation Strategy**: Recommend how the user can conserve their energy for later stages of the task or for future tasks, especially when the task is prolonged or requires intense effort.
+    3. **Break/Rest Strategy**: Provide guidance on how to structure breaks or rest periods during the task. Suggest the optimal timing and length of breaks to recharge without disrupting task flow.
+    4. **Energy Recovery Strategy**: Explain how the user can plan for recovery during or after the task to prevent burnout, maintain energy levels, and ensure they are ready for subsequent tasks.
+    5. **Task Switching Strategy**: Offer advice on when and how the user can switch between tasks to balance cognitive load, maintain energy, and avoid feeling overwhelmed.
+    6. **Energy Effort Adjustment**: Advise on how the user should adjust their effort levels in response to the task's demands and their current energy levels, ensuring they avoid overexertion or under-engagement.
 
     Example Output:
     - For a task like *writing a report*:
-      - **Energy Management Tips**: Begin with a clear plan or outline to save mental energy later. Dedicate focused energy bursts to writing, followed by lighter editing tasks.
-      - **Prioritization**: Tackle this task early in the day when mental energy is at its peak to ensure clarity and productivity.
-      - **Pacing and Breaks**: Work in 30-minute focused intervals, taking 5-minute breaks between sections. Use longer breaks after completing a major section.
-      - **Optimizing Mental vs. Physical Energy**: Incorporate light physical activity during breaks, like stretching or walking, to maintain overall energy levels.
-      - **Motivation and Focus**: Keep your goal in mind—visualize the satisfaction of completing the report. Use a timer or music to stay on track.
+      - **Task Segmentation Strategy**: Break the report into distinct sections (introduction, body, conclusion) and work on each one in separate focused sessions, with breaks in between.
+      - **Energy Conservation Strategy**: Start with the most mentally demanding section of the report when energy is high, and save editing or proofreading for later when energy is lower.
+      - **Break/Rest Strategy**: Work in 30-minute intervals with 5-minute breaks. After completing a major section, take a longer 15-minute break to recharge.
+      - **Energy Recovery Strategy**: During breaks, engage in activities like stretching or deep breathing to relax both body and mind. After completing the task, take a longer rest to recover.
+      - **Task Switching Strategy**: Avoid switching tasks too frequently to maintain deep focus on the report, but feel free to switch to a lighter task like checking emails during an energy dip.
+      - **Energy Effort Adjustment**: Focus on high-effort tasks during your peak energy times (usually early in the day). As energy levels dip, shift to less demanding tasks like editing or formatting.
 
     Be empathetic and motivational in your advice, ensuring the user feels supported in managing their energy and completing the task. Your suggestions should encourage sustainable productivity and help them feel empowered to tackle their tasks efficiently and effectively.
 
@@ -251,4 +253,3 @@ AllocationStrategies = PromptTemplate(
     ---
     """
 )
-

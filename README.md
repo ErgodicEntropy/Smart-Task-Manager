@@ -120,7 +120,12 @@ The smart task manager automates energy allocation strategies by aligning estima
 - **Context-Friendly Human Feedback**: task labeling based on context-friendly human feedback represented by the task required energy on the user initial energy ratio -> a supervised learning model is utilized to match each task-user energy ratio to a task label (user-free task required energy) or a symbolic model using a JSON dict (this process is called task decontextualization, and its purpose is scalability to facilitate network effects)
 - **Recommendation Button**: the user clicks on this button to get recommendations on energy allocation strategies for the optimal task list provided.
 - **QA Conversational Interface**: the LLM enters into a chat conversation with the user about each task in the optimal tasks list (ideally, fine-tuning or RAG should be used in this step) ->  With enough human-in-the-loop (enough network effects), the task requirements database gets increasingly filled to eventually allow for the transition from specific prompting to fine-tuning and/or RAG.
-
+   1. Task Segmentation Strategy:  How the user decides to break down the task into smaller segments or phases, affecting their work rhythm (e.g., segmented vs. continuous work).
+   2. Energy Conservation Strategy: The approach the user takes to conserve their energy for later stages of the task or other future tasks.
+   3. Break/Rest Strategy: How the user decides to take breaks or rest during task execution, and how these breaks are structured.
+   4. Energy Recovery Strategy: How the user plans for recovery during or after the task to prevent burnout and recharge for future tasks.
+   5. Task Switching Strategy: The approach the user takes to switch between tasks, balancing cognitive load and energy conservation.
+   6. Energy Effort Adjustment: Measures how the user adjusts the intensity of their effort in response to task demands and their current energy reserves.
 ## Installation
 
 To get started with the project, follow these steps:
