@@ -6,7 +6,7 @@ import os
 
 
 # Default configurations
-COHERE_API_TOKEN = 'IdU5efIJTsWndc1HkSqoqdCK45tViujej4p8NopX'
+COHERE_API_TOKEN = ''
 
 os.environ['COHERE_API_KEY'] = COHERE_API_TOKEN
 
