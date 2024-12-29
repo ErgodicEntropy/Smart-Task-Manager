@@ -95,14 +95,14 @@
     <div class="content">
         <h1>Energy Questionnaire</h1>
         <p>Please answer the following questions to help us measure your energy levels.</p>
-        <form action="/submit" method="POST">
+        <form action="/data" method="POST">
             <!-- Intellectual/Cognitive Energy: Clarity of Thought, Focus/Attention, Mental Fatigue, Task Readiness, Cognitive Load -->
             <h5>Intellectual/Cognitive Energy</h5>
             <h6>Clarity of Thought:</h6> 
             <label for="clarity"> How clear are your thoughts at this moment?</label>
             <div style="display: flex; align-items: center; gap: 10px;">
                 <span style="flex-shrink: 0;">Completely Foggy</span>
-                <input type="range" id="fatigue" name="fatigue" min="0" max="100" value="50" style="flex-grow: 1;" oninput="updateClarityValue(this.value)">
+                <input type="range" id="clarity" name="clarity" min="0" max="100" value="50" style="flex-grow: 1;" oninput="updateClarityValue(this.value)">
                 <span style="flex-shrink: 0;">Fully Clear</span>
             </div>
             <span id="clarity-value">50</span>
@@ -150,7 +150,7 @@
             <div style="display: flex; align-items: center; gap: 10px;">
                 <span style="flex-shrink: 0;">Disinterested</span>
                 <input type="range" id="motivation" name="motivation" min="0" max="100" value="50" style="flex-grow: 1;" oninput="updateMotivationValue(this.value)">
-=                <span style="flex-shrink: 0;">Motivated</span>
+                <span style="flex-shrink: 0;">Motivated</span>
             </div>
             <span id="motivation-value">50</span>
         
@@ -191,9 +191,9 @@
             <h6>Energy Trend:</h6>
             <label for="trend">How do you feel your energy is changing?</label>
             <select id="trend" name="trend">
-                <option value=-1>Falling</option>
-                <option value=0>Steady</option>
-                <option value=1>Rising</option>
+                <option value="-1">Falling</option>
+                <option value="0">Steady</option>
+                <option value="1">Rising</option>
             </select>
         
             <!-- Environmental/Social Energy: Social Interaction, External Stimulation -->
@@ -272,11 +272,6 @@
             function updateBehaviorValue(value){
                 document.getElementById("behavior-value").textContent = value
             }
-
-
-
-
-
 
         </script>
 

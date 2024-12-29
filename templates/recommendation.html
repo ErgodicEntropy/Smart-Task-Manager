@@ -159,22 +159,22 @@
         <div class="chatbox">
             <!-- Static messages -->
             <div class="message bot-message">
-                {{allocation_resp}}
+                {{resp}}
             </div>    
         </div>
 
         <!-- Input field and send button -->
         <div class="chat-input">
-            <form action="/conversation" method="POST">
-                <input type="text" name="userMessage" placeholder="Type your message..."/>
+            <form action="/recommendation/{{task.id}}" method="POST">
+                <input type="text" name="userMessage" id="userMessage" placeholder="Type your message..."/>
                 <input type="submit" value="Send">
             </form>
         </div>
 
-        <!-- Chat Conversation Form (to send user message) -->
+        <!-- Chat Conversation Form (to end conversation) -->
         <form action="/output" method="GET">
             <div>
-                <input type="submit" value="Get Optimal Task List!">
+                <input type="submit" value="Done">
             </div>
         </form>
     </div>

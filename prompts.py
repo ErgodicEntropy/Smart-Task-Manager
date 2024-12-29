@@ -51,28 +51,32 @@ Here is the task provided by the user:
 {task}
 
 Your response should strictly adhere to the following JSON format:
-{
-    "content": "Task description",
-    "cognitive_load": "low",
-    "physical_exertion": "low",
-    "task_duration": "low",
-    "task_precision": "moderate",
-    "collaboration_intensity": "low"
-}
+[
+    {{
+        "content": "Task description",
+        "cognitive_load": "low",
+        "physical_exertion": "low",
+        "task_duration": "low",
+        "task_precision": "moderate",
+        "collaboration_intensity": "low"
+    }}
+]
 
 Ensure the task is represented in the JSON dictionary. If additional information about the task seems unclear, make a reasonable assumption based on common experience and ensure all parameter values are strictly one of the allowed categories. Be concise in your response, returning only the JSON object.
 
 ---
 
 Here is an example of your expected output:
-{
-    "content": "Go for a morning jog in the park",
-    "cognitive_load": "low",
-    "physical_exertion": "high",
-    "task_duration": "moderate",
-    "task_precision": "low",
-    "collaboration_intensity": "extremely low"
-}
+[
+    {{
+        "content": "Go for a morning jog in the park",
+        "cognitive_load": "low",
+        "physical_exertion": "high",
+        "task_duration": "moderate",
+        "task_precision": "low",
+        "collaboration_intensity": "extremely low"
+    }}
+]
 
 Please process the task and return the structured JSON response.
 Ensure that only this exact JSON structure is output, and NOTHING ELSE. Your response should contain NO additional phrases, explanations, or commentary. Only print the JSON as shown in the template above, without adding anything else.
@@ -217,88 +221,34 @@ Your response is a clear-cut, structured JSON dictionary. JUST PRINT THE JSON AN
 
 
 
-Allocation_Prompt_Template = PromptTemplate(
-    input_variables=['tasks_list'],
+AllocationStrategies = PromptTemplate(
+    input_variables=['task'],
     template="""
-    You are a helpful assistant guiding a user in efficiently allocating their energy for a list of tasks they need to complete. The user has provided a list of tasks, and your job is to suggest strategies for how they can best allocate their energy to complete each task without burning out.
+    You are a helpful and empathetic assistant guiding a user in efficiently allocating their energy for a task they need to complete. Your goal is to provide actionable and personalized strategies that help the user manage their energy effectively, complete the task efficiently, and avoid burnout.
 
-    Here is the list of tasks provided by the user:
-    {tasks_list}
+    Here is the task provided by the user:
+    {task}
 
-    For each task in the list, kindly provide the following energy allocation strategies:
-    1. *Energy Management Tips*: Suggest how to divide energy for the task, when to give high effort, and when to take breaks or reduce intensity.
-    2. *Prioritization*: Recommend whether the task should be tackled first (if it’s the most demanding) or saved for later (if it’s less energy-intensive), and explain why.
-    3. *Pacing and Breaks*: Suggest how to pace the task to maintain a sustainable energy level, including the ideal moments for short breaks to recharge.
-    4. *Optimizing Mental vs. Physical Energy*: If the task requires both mental and physical energy, suggest how to balance the two (e.g., alternating focus-intensive and physically demanding actions).
+    For this task, kindly provide the following energy allocation strategies:
+    1. **Energy Management Tips**: Offer detailed guidance on how to approach the task with an optimal energy distribution. Specify when to exert high effort, when to ease off, and how to balance energy expenditure overall.
+    2. **Prioritization**: Explain whether the task should be tackled first, in the middle, or toward the end of the user's schedule. Base this on the typical energy demands and recovery requirements of the task.
+    3. **Pacing and Breaks**: Recommend a pacing strategy, including how to divide the task into manageable segments, and suggest when to take breaks to recharge without losing momentum.
+    4. **Optimizing Mental vs. Physical Energy**: If the task requires both mental and physical energy, suggest a specific plan to balance these demands (e.g., alternating focus-heavy periods with light physical activity).
+    5. **Motivation and Focus**: Share empathetic advice or techniques to help the user maintain motivation and avoid distractions while completing the task. Include tips for setting a positive mindset and staying productive.
 
-    Here are some examples of energy allocation strategies you could provide:
+    Example Output:
+    - For a task like *writing a report*:
+      - **Energy Management Tips**: Begin with a clear plan or outline to save mental energy later. Dedicate focused energy bursts to writing, followed by lighter editing tasks.
+      - **Prioritization**: Tackle this task early in the day when mental energy is at its peak to ensure clarity and productivity.
+      - **Pacing and Breaks**: Work in 30-minute focused intervals, taking 5-minute breaks between sections. Use longer breaks after completing a major section.
+      - **Optimizing Mental vs. Physical Energy**: Incorporate light physical activity during breaks, like stretching or walking, to maintain overall energy levels.
+      - **Motivation and Focus**: Keep your goal in mind—visualize the satisfaction of completing the report. Use a timer or music to stay on track.
 
-    - For a task like "cleaning the house":
-      "Cleaning can be physically demanding, so it's best to break it into smaller chunks. Start with a high-energy task like picking up clutter, then take short breaks. Afterward, tackle a lighter task like dusting. Make sure to drink water and stretch between breaks to stay refreshed."
-
-    - For a task like "writing a report":
-      "Writing can be mentally exhausting, so it's important to pace yourself. Start by outlining the structure of the report, using a burst of focused energy. After each section, take a short break to refresh your mind. Consider alternating between writing and research to prevent mental fatigue."
-
-    Please provide energy allocation strategies for each task in the list, offering clear advice on how to manage energy effectively. Acknowledge that energy levels can vary, but provide general strategies that would work for most people. 
-
-    Be sure to be gentle, empathetic, and encouraging in your suggestions so the user feels supported in managing their energy and completing their tasks efficiently.
-
-    --- 
-
-    Please keep in mind that these strategies should help the user pace themselves and stay productive without overexerting their energy.
+    Be empathetic and motivational in your advice, ensuring the user feels supported in managing their energy and completing the task. Your suggestions should encourage sustainable productivity and help them feel empowered to tackle their tasks efficiently and effectively.
 
     ---
-    
-                                """)
+    Provide energy allocation strategies specific to the task while keeping your tone kind, encouraging, and practical.
+    ---
+    """
+)
 
-
-Output_Prompt_Template = PromptTemplate(input_variables=['context'], template="""
-
-You are a helpful assistant who is assisting a user in organizing their tasks according to the energy levels required to complete them. The user has provided a list of tasks, each with its corresponding energy requirement. Your goal is to sort these tasks based on the energy required to accomplish them, starting with those that require the least energy and moving towards those that require the most. 
-
-Here is the context provided by the user, which includes his estimated energy value and task energetic requirements:
-{context}
-
-For each task, please consider:
-- The energy level (low, moderate, or high) that is required for the task.
-- Whether the task is mentally or physically demanding, or both.
-- What kind of preparation or pacing might be necessary to complete the task effectively.
-
-Please sort the tasks in the following way:
-1. Start with the tasks that require the exact amount of energy level given to you, and explain why these tasks can be approached first.
-2. Then, move on to the tasks that require either less amount of energy, explaining how they can be tackled after the energy-aligned tasks are completed.
-3. Finally, include the hard tasks, requiring more amount of energy, describing how they should be approached once the user has used up their available energy for easier tasks.
-
-For each task, return it as a structured object with the following properties:
-- content: A short description of the task (e.g., "Make the bed", "Go for a walk").
-- energy_required: The energy level required for the task (e.g., "extremely low", "low", "moderate", "high", "extremely high").
-- preparation: A brief description of what preparation or pacing might be needed (e.g., "Take breaks", "Prepare a plan").
-- task_type: Mentally, physically, or both demanding (e.g., "Physical", "Mental", "Both").
-- recommended_start_time: A suggested time for the user to start the task (e.g., "Morning", "Afternoon").
-
-Ensure the output is in the following format:
-[
-    {{
-      "content": "Task description", "energy_required": "low", "preparation": "Take it easy", "task_type": "Physical", "recommended_start_time": "Morning"
-    }},
-    {{
-      "content": "Task description", "energy_required": "moderate", "preparation": "Prepare a plan", "task_type": "Mental", "recommended_start_time": "Afternoon"
-    }},
-    {{
-      "content": "Task description", "energy_required": "high", "preparation": "Take breaks", "task_type": "Both", "recommended_start_time": "Evening"
-    }}
-]
-
-This list should contain all the tasks sorted from the least to the most demanding, along with helpful advice for each task. You should describe how each task can be tackled based on its energy requirements.
-
-Here’s an example of how to approach this:
-
-- If the context includes tasks like “making the bed” (low energy) and “running errands” (moderate energy), the task of “making the bed” should come first, followed by “running errands.” 
-- Similarly, for tasks that require high energy like “deep cleaning,” provide advice on how to break the task into smaller sections to avoid burnout.
-
-Please organize and describe the tasks accordingly, ensuring that your tone is understanding and helpful.
-
----
-Your responses should be calm, non-judgmental, and helpful to the user, guiding them on how to best distribute their energy across tasks.
----
-""")

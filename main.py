@@ -42,15 +42,15 @@ def daymetric(peak_daytime,current_daytime):
         "Night": 5,
         "Midnight": 6
     }
-    
-    daydist= {peak_daytime : 6} # as maximum value 
-    L = daydict.copy()
-    L.pop(peak_daytime)
-    for dt in L:
-        daydist[dt] = 6 - abs(daydict[peak_daytime] - daydict[dt])
+    if peak_daytime in daydict and current_daytime in daydict:
+        daydist = {}    
+        for dt in daydict:
+            daydist[dt] = 6 - abs(daydict[peak_daytime] - daydict[dt])
+            
+        return daydist[current_daytime]
+    else:
+        return 0
         
-    return daydist[current_daytime]
-    
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)  # Required for using sessions
 
@@ -80,6 +80,7 @@ class UpdatedToDo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(200), nullable=False)
     energy_required = db.Column(db.String(200), nullable=False)
+    rank = db.Column(db.Integer, nullable=True)    
     date = db.Column(db.DateTime, default=datetime.now())
 
     def __repr__(self):
@@ -139,27 +140,54 @@ def update_task(id):
             return "There was an error updating your task"
     return render_template('update.html', task=task)
 
+
+@app.route('/finalize_tasks', methods=['POST'])
+def finalize_tasks():
+    return redirect('/data')
+
+# # User Data
+# @app.route('/datatest', methods=['POST', 'GET'])
+# def submit_form():
+#     if request.method == "POST":
+#         # energy_dist = {"extremely high": 90, "high": 70, "moderate": 50, "low": 30, "extremely low": 10}
+#         # # form_data = request.form.to_dict()
+#         # # data_list = [float(form_data['clarity'])]
+#         # data_list = [request.form['clarity']]
+#         energy_level = request.form['clarity']                    
+#         new_energy = Energy(level=energy_level)
+#         try:
+#             db.session.add(new_energy)
+#             db.session.commit()
+#             session['energy_level'] = energy_level
+#             flash(f'Energy level set to {energy_level}', 'success')
+#         except:
+#             flash('There was an issue saving the energy level', 'error')
+#             return redirect('/datatest')
+
+#     return render_template('datatest.html')
+
+
 # User Data
 @app.route('/data', methods=['POST', 'GET'])
 def submit_form():
-    energy_dist = {"extremely high": 90, "high": 70, "moderate": 50, "low": 30, "extremely low": 10}
-    currenthour = datetime.today().hour
-    day_category = daycategory(currenthour)
-    if request.method == 'POST':
+    if request.method == "POST":
+        energy_dist = {"extremely high": 90, "high": 70, "moderate": 50, "low": 30, "extremely low": 10}
+        currenthour = datetime.today().hour
+        day_category = daycategory(currenthour)
         data_list = [
-            request.form.get('clarity'),
-            request.form.get('focus'),
-            request.form.get('fatigue'),
-            request.form.get('readiness'),
-            request.form.get('load'),
-            request.form.get('motivation'),
-            request.form.get('stress'),
-            request.form.get('physical_fatigue'),
-            daymetric(request.form.get('circadian_rhythm'), day_category),
-            request.form.get('trend'),
-            request.form.get('external_stimulation'),
-            request.form.get('interaction_energy'),
-            request.form.get('task_initiation')
+            float(request.form['clarity']),
+            float(request.form['focus']),
+            float(request.form['fatigue']),
+            float(request.form['readiness']),
+            float(request.form['load']),
+            float(request.form['motivation']),
+            float(request.form['stress']),
+            float(request.form['physical_fatigue']),
+            daymetric(request.form['circadian_rhythm'], day_category),
+            float(request.form['trend']),
+            float(request.form['external_stimulation']),
+            float(request.form['interaction_energy']),
+            float(request.form['task_initiation'])
         ]
         # Energy Scoring Function (Weighted Average)
         N = len(data_list)
@@ -251,11 +279,11 @@ def Sort():
 
         #Requirement Scoring Function
         tasksdata = [] #list of content-energy dictionaries
-        weights = np.random.pareto(2.0,K)
+        weights = np.random.pareto(2.0,5)
         weights /= weights.sum()
         for task in taskenergyjson:
             energyvals = [task["cognitive_load"], task["physical_exertion"], task["task_duration"], task["task_precision"], task["collaboration_intensity"]]
-            K = len(energyvals) # K = L - 1 (L is the task metamodel complexity)
+            K = len(energyvals) # K = L - 1 (L is the task metamodel complexity) 5
             weighted_sum = 0 
             for k in range(K):
                 weighted_sum += weights[k]*energy_dist[energyvals[k]]
@@ -317,26 +345,23 @@ def Sort():
                 print(f"Error adding task: {e}")
 
     optimal_task_list = UpdatedToDo.query.order_by(UpdatedToDo.date).all() #early comes first
-    print("------------------")
-    print("Optimal Task List:", optimal_task_list)
-    print("------------------")
+    # print("------------------")
+    # print("Optimal Task List:", optimal_task_list)
+    # print("------------------")
     return render_template('output.html', optimal_task_list=optimal_task_list)
 
-
+#Route for Energy Allocation Recommendation
 @app.route('/recommendation/<int:id>', methods=['POST','GET'])
 def recommend(id):
     task = UpdatedToDo.query.get_or_404(id)
-    if request.method == 'POST':
-        task.content = request.form['content'] # not a string
-        try:
-            db.session.commit()
-            return redirect('/output') #redirect the user to the optimal task table once he CLICKS on CHAT DONE button
-        except:
-            return "There was an error updating your task"
+    resp = agents.run_allocation_query(task.content) 
+    if request.method == "POST":
+        message = request.form['userMessage']
+        resp = agents.run_allocation_query(message)         # conversationchain is needed
+    return render_template('recommendation.html', task=task, resp=resp)
+    
 
-    
-    return render_template('recommendation.html', task=task)
-    
+#Route for Rank Explanation
 
 
 # Start the Flask app

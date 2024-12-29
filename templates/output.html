@@ -44,10 +44,7 @@
             <tr>
                 <th>Task</th>
                 <th>Energy Requirement</th>
-                <th>Preparation</th>
-                <th>Task Type</th>
-                <th>Recommended Start Time</th>
-                <th>State</th>
+                <th>AI Assistance</th>
             </tr>
         </thead>
         <tbody>
@@ -57,11 +54,11 @@
                 <td>{{ task.energy_required }}</td>
 
                 <td>
-                    <a href="/recommendation/{{ task.id }}">Get Recommendations</a><br>
+                    <a href="/recommendation/{{ task.id }}"> Recommendation</a><br>
                 </td>    
 
                 <!-- Kanban Board -->
-                <td>
+                <!-- <td>
                     <a href="#" class="todo-button" onclick="markAsToDo('{{ loop.index }}')">To Do</a><br>
                 </td>    
                 <td>
@@ -69,15 +66,15 @@
                 </td>    
                 <td>
                     <a href="#" class="done-button" onclick="markAsDone('{{ loop.index }}')">Done</a><br>
-                </td>    
+                </td>     -->
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    <!-- Chat Conversation Form (to send user message) -->
-    <!-- <form action="/recommendation" method="GET">
-        <input type="submit" value="Get Recommendations!">
+    <!-- Chat Conversation Form -->
+    <!-- <form action="/explanation" method="POST">
+        <input type="submit" value="Explain Why this rank?">
     </form>  -->
 </div>
 

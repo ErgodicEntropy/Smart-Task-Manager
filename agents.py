@@ -6,7 +6,7 @@ import os
 
 
 # Default configurations
-COHERE_API_TOKEN = ''
+COHERE_API_TOKEN = 'IdU5efIJTsWndc1HkSqoqdCK45tViujej4p8NopX'
 
 os.environ['COHERE_API_KEY'] = COHERE_API_TOKEN
 
@@ -19,8 +19,7 @@ memory = ConversationBufferMemory(memory_key='history', return_messages=True)
 # Import prompts from prompts.py
 TR = prompts.TaskReq
 STR = prompts.SingleTaskReq
-AP = prompts.Allocation_Prompt_Template
-OP = prompts.Output_Prompt_Template
+AS = prompts.AllocationStrategies
 
 
 def continue_conversation(user_message: str): #query type: string (user message)
@@ -55,18 +54,13 @@ def run_single_task_query(query: str): #query type: list of strings or stringifi
 
 # Run LLM Query for Energy Allocation Agent
 def run_allocation_query(query: str): #query type: list of strings or stringified list of strings (tasks list)
-    Allocation_Agent = LLMChain(llm=llm,prompt=AP, verbose=True)
-    response = Allocation_Agent.run({"tasks_list": query})
+    Allocation_Agent = LLMChain(llm=llm,prompt=AS, verbose=True)
+    response = Allocation_Agent.run({"task": query})
     # Log the response into memory
     memory.chat_memory.add_user_message(f"Task List Query: {query}")
     memory.chat_memory.add_ai_message(response)
     return response
 
-# Run LLM Query for Output Agent (Optimal Task List)
-def run_output_query(query: str): #query type: string + list of strings or stringified list of strings (tasks list + energy)
-    Output_Agent = LLMChain(llm=llm,prompt=OP, verbose=True)
-    response = Output_Agent.run({"context": query})
-    return response
 
 
 
