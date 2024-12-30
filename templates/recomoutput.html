@@ -11,7 +11,7 @@
                 padding: 0;
                 box-sizing: border-box;
             }
-    
+            
             /* Body Styling */
             body {
                 font-family: 'Arial', sans-serif;
@@ -19,7 +19,7 @@
                 color: #333;
                 line-height: 1.6;
             }
-    
+            
             /* Main Content */
             .content {
                 width: 80%;
@@ -35,13 +35,13 @@
                 color: #333;
                 margin-bottom: 10px;
             }
-    
+            
             p {
                 font-size: 18px;
                 color: #555;
                 margin-bottom: 20px;
             }
-    
+            
             table {
                 width: 100%;
                 border-collapse: collapse;
@@ -81,7 +81,7 @@
                 font-weight: bold;
                 transition: all 0.3s ease;
             }
-    
+            
             .finish-button {
                 background-color: #4CAF50;
                 color: white;
@@ -91,11 +91,11 @@
                 border-radius: 4px;
                 transition: background-color 0.3s ease;
             }
-    
+            
             .finish-button:hover {
                 background-color: #45a049;
             }
-    
+            
             .task-row {
                 transition: background-color 0.3s ease;
             }
@@ -103,7 +103,7 @@
             .task-row.finished {
                 background-color: #e0ffe0;
             }
-    
+            
             .recommendation {
                 background-color: #4CAF50;
                 color: white;
@@ -113,11 +113,11 @@
                 border-radius: 4px;
                 transition: background-color 0.3s ease;
             }
-        
+            
             .recommendation:hover {
                 background-color: #007B9E;
             }
-    
+            
             .explain {
                 background-color: #4CAF50;
                 color: white;
@@ -131,8 +131,8 @@
             .explain:hover {
                 background-color: #007B9E;
             }
-    
-                /* Overlay */
+            
+            /* Overlay */
             #overlay {
                 display: none;
                 position: fixed;
@@ -144,7 +144,7 @@
                 z-index: 1000;
                 backdrop-filter: blur(10px) contrast(20%); /* Combine filters */
             }
-    
+            
             /* Modal */
             #feedbackModal {
                 position: fixed;
@@ -173,7 +173,7 @@
                 border:0px ;
                 margin: 0px;
             }
-
+            
             #feedbackModal form {
                 display: flex;
                 flex-direction: column;
@@ -183,7 +183,7 @@
             #feedbackModal input[type="radio"] {
                 margin: 2px;
             }
-    
+            
             #feedbackModal button {
                 display: inline-block;
                 margin: 5px;
@@ -202,9 +202,154 @@
             #feedbackModal button:nth-child(2) {
                 background-color: #f44336;
             }
-    
+            
             #feedbackModal button:nth-child(2):hover {
                 background-color: #d32f2f;
+            }
+            
+            /*chatbot body from recommmendation html
+            body {
+                margin: 0;
+                padding: 0;
+                background-color: #1e1e2e;
+                color:green;
+                font-family: 'Arial', sans-serif;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+            }*/
+            
+            /* chatbot css*/
+            #chatbot {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 95%;
+                height: 95%;
+                flex-direction: column;
+                justify-content: flex-start;
+                overflow-y: auto;
+                background-color: #fff;
+                padding:0px;
+                margin:0px;
+                border:0px;
+                border-radius: 0px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+                z-index: 1001;
+                display: none;
+                box-sizing: border-box;
+                overflow: hidden;
+            }
+            
+            .chat-container {
+                height: 100%;
+                width: 100%;
+                flex: 1;
+                background-color: #2b2b3d;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 20px;
+                box-sizing: border-box;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+
+    
+            .chatbox {
+                flex: 1;
+                overflow-y: auto;
+                padding: 15px;
+                background-color: #1c1c28;
+                border-radius: 10px;
+                color: #f1f1f1;
+                margin-bottom: 15px;
+                font-size: 1rem;
+            }
+    
+            .message {
+                margin-bottom: 10px;
+            }
+    
+            .bot-message {
+                font-style: italic;
+                font-weight: bold;
+                color: white;
+                background-color: rgba(76, 175, 80, 0.1);
+                border-left: 4px solid #4caf50;
+                padding: 10px 15px;
+                margin-bottom: 20px;
+                border-radius: 8px;
+                font-size: 1rem;
+                box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+                animation: fadeIn 0.5s ease-in;
+            }
+    
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        
+            .chat-input input[type="text"] {
+                flex: 1;
+                padding: 10px;
+                margin:2px;
+                border: 3px solid #444;
+                border-radius: 5px;
+                background-color: #1c1c28;
+                color: #f1f1f1;
+                font-size: 1rem;
+                height:100%;
+                width:50%;
+            }
+    
+            .chat-input input[type="text"]:focus {
+                outline: none;
+                border-color: #4caf50;
+            }
+            
+            div {
+                text-align: center;
+                margin-top: 20px;
+            }
+            .chat-input button {
+                padding: 10px;
+                border: 1px;
+                margin:1px;
+                background-color: #4caf50;
+                color: white;
+                border-radius: 5px;
+                cursor: pointer;
+                margin-left: 10px;
+                font-size: 1rem;
+                transition: background-color 0.3s ease;
+            }
+    
+            .chat-input button:hover {
+                background-color: #3a9d40;
+            }
+    
+            div button {
+                padding: 12px 20px;
+                border: 1px;
+                border-radius: 5px;
+                background-color: #007bff;
+                color: white;
+                font-size: 1rem;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+    
+            div button:hover {
+                background-color: #0056b3;
             }
         </style>
     
@@ -232,11 +377,11 @@
                     <td>{{ task.energy_required }}</td>
 
                     <td>
-                        <a href="/recommendation/{{ task.id }}"  class="recommendation">Recommendation</a><br>
+                        <a href="#" class="recommendation" onclick="getRecommendation('{{ loop.index }}')">Recommendation</a><br>
                     </td>    
 
                     <td>
-                        <a href="/explanation/{{ task.id }}"  class="explain">Explain Rank</a><br>
+                        <a href="#"  class="explain" onclick="getExplanation('{{ loop.index }}')">Explain Rank</a><br>
                     </td>    
 
                     <!-- Kanban Board -->
@@ -266,6 +411,44 @@
             <button type="button" onclick="submitFeedback()">Submit</button>
             <button type="button" onclick="closeModal()">Cancel</button>
         </form>
+    </div>
+
+
+    <div id="chatbot">
+        <div class="chat-container">
+            <div class="chatbox">
+                <div class="message bot-message">
+                    Loading...
+                </div>    
+            </div>
+            <div class="chat-input">
+                    <input type="text" name="userMessage" id="userMessage" placeholder="Type your message..."/>
+                    <button type="button" onclick="postRecommendation()">Send</button>
+            </div>
+            <div>
+                    <button type="button" onclick="closeChat()">Done</button>
+            </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="chatbot_explainer">
+        <h3>Rank Explanation</h3>
+        <div class="chat-container_explainer">
+            <div class="chatbox_explainer">
+                <div class="message bot-message_explainer">
+                    Loading...
+                </div>    
+            </div>
+            <div class="chat-input_explainer">
+                    <input type="text" name="userMessage_explainer" id="userMessage_explainer" placeholder="Type your message..."/>
+                    <button type="button" onclick="postExplanation()">Send</button>
+            </div>
+            <div>
+                    <button type="button" onclick="closeExplanationChat()">Done</button>
+            </div>
+            </form>
+        </div>
     </div>
 
     <!-- Kanban Board: implement a timer for the doing board unless the user feedbacks the time required for that task himself -->
@@ -350,7 +533,7 @@
         
         function saveFeedback(taskId, feedback) {
             console.log(`Task ID: ${taskId}, Feedback: ${feedback}`);
-            // Implement the logic to save feedback (e.g., send to a server)
+        
             fetch('/save_feedback', {
                 method: 'POST',
                 headers: {
@@ -358,15 +541,25 @@
                 },
                 body: JSON.stringify({ taskId: taskId, feedback: feedback }),
             })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Feedback saved:', data);
+            .then(response => {
+                if (response.ok) {
+                    return response.blob(); // Receive the file as a blob
+                }
+                throw new Error('Failed to save feedback');
+            })
+            .then(blob => {
+                // Create a link element and trigger the download
+                const link = document.createElement('a');
+                const url = window.URL.createObjectURL(blob);
+                link.href = url;
+                link.download = 'feedback.json'; // Default file name for the downloaded file
+                link.click(); // Trigger the download
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
         }
-        
+
         function closeModal() {
             const modal = document.getElementById("feedbackModal");
             const overlay = document.getElementById("overlay");
@@ -390,6 +583,139 @@
             openFeedbackModal(taskId);
         }
         
+        function getRecommendation(taskId) {
+            const overlay = document.getElementById("overlay");
+            const chatmodal = document.getElementById("chatbot");
+            const botMessageDiv = document.querySelector(".message.bot-message");
+            overlay.style.display = "block";        
+            chatmodal.style.display = "block";
+            
+            fetch(`/get_recommendation/${taskId}`, {
+                method: 'GET',
+            })
+            .then(response => response.json()) // Parse the JSON response
+            .then(data => {
+                console.log('Task:', data.task);
+                console.log('Response:', data.response);
+                // Update the UI with the data
+                if (botMessageDiv) {
+                    botMessageDiv.textContent = data.response; // Update the content
+                } else {
+                    console.error("Bot message div not found!");
+                }
+
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function postRecommendation() {
+            const userMessage = document.getElementById("userMessage").value;
+        
+            fetch(`/post_recommendation`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ userMessage: userMessage }), // Send the user message
+            })
+            .then(response => response.json()) // Parse the JSON response
+            .then(data => {
+                console.log('Response:', data.response);
+                
+                // Optionally, append the user's message as a separate div
+                const chatbox = document.querySelector(".chatbox");
+                const userMessageDiv = document.createElement("div");
+                userMessageDiv.className = "message user-message";
+                userMessageDiv.textContent = userMessage;
+
+                const botMessageDiv = document.createElement("div");
+                botMessageDiv.className = "message bot-message";
+                botMessageDiv.textContent = data.response;
+        
+                chatbox.appendChild(userMessageDiv);
+                chatbox.appendChild(botMessageDiv);
+
+        
+                // Clear the input field
+                document.getElementById("userMessage").value = "";
+            })
+            .catch(error => console.error('Error:', error));
+        }
+                
+        function closeChat() {
+            const overlay = document.getElementById("overlay");
+            const chatmodal = document.getElementById("chatbot");
+            chatmodal.style.display = "none";
+            overlay.style.display = "none";
+
+        }
+
+        function getExplanation(taskId) {
+            const overlay = document.getElementById("overlay");
+            const chatmodal = document.getElementById("chatbot_explainer");
+            const botMessageDiv = document.querySelector(".message.bot-message_explainer");
+            overlay.style.display = "block";        
+            chatmodal.style.display = "block";
+            
+            fetch(`/get_explanation/${taskId}`, {
+                method: 'GET',
+            })
+            .then(response => response.json()) // Parse the JSON response
+            .then(data => {
+                console.log('Task:', data.task);
+                console.log('Response:', data.response);
+                // Update the UI with the data
+                if (botMessageDiv) {
+                    botMessageDiv.textContent = data.response; // Update the content
+                } else {
+                    console.error("Bot message div not found!");
+                }
+
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function postExplanation() {
+            const userMessage = document.getElementById("userMessage_explainer").value;
+        
+            fetch(`/post_explanation`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ userMessage: userMessage }), // Send the user message
+            })
+            .then(response => response.json()) // Parse the JSON response
+            .then(data => {
+                console.log('Response:', data.response);
+                
+                // Optionally, append the user's message as a separate div
+                const chatbox = document.querySelector(".chatbox_explainer");
+                const userMessageDiv = document.createElement("div");
+                userMessageDiv.className = "message user-message_explainer";
+                userMessageDiv.textContent = userMessage;
+
+                const botMessageDiv = document.createElement("div");
+                botMessageDiv.className = "message bot-message_explainer";
+                botMessageDiv.textContent = data.response;
+        
+                chatbox.appendChild(userMessageDiv);
+                chatbox.appendChild(botMessageDiv);
+
+        
+                // Clear the input field
+                document.getElementById("userMessage_explainer").value = "";
+            })
+            .catch(error => console.error('Error:', error));
+        }
+                
+        function closeExplanationChat() {
+            const overlay = document.getElementById("overlay");
+            const chatmodal = document.getElementById("chatbot_explainer");
+            chatmodal.style.display = "none";
+            overlay.style.display = "none";
+        }
+
     </script>
 
     <style>

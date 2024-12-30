@@ -4,7 +4,7 @@ import secrets
 import agents
 from query import Query
 import json
-from flask import Flask, render_template, request, redirect, session, flash, url_for
+from flask import Flask, render_template, request, redirect, session, flash, url_for, jsonify, send_file
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -383,32 +383,65 @@ def Sort():
                 print(f"Error adding task: {e}")
 
     optimal_task_list = UpdatedToDo.query.order_by(UpdatedToDo.date).all() #early comes first
-    return render_template('output.html', optimal_task_list=optimal_task_list)
+    return render_template('recomoutput.html', optimal_task_list=optimal_task_list)
 
 #Route for Energy Allocation Recommendation
-@app.route('/recommendation/<int:id>', methods=['POST','GET'])
-def recommend(id):
+# @app.route('/recommendation/<int:id>', methods=['POST','GET'])
+# def recommend(id):
+#     task = UpdatedToDo.query.get_or_404(id)
+#     resp = agents.run_allocation_query(task.content) 
+#     if request.method == "POST":
+#         message = request.form['userMessage']
+#         resp = agents.run_allocation_query(message)         # conversationchain is needed
+#     return render_template('recommendation.html', task=task, resp=resp)
+
+@app.route('/get_recommendation/<int:id>', methods=['GET'])
+def get_recommend(id):
     task = UpdatedToDo.query.get_or_404(id)
     resp = agents.run_allocation_query(task.content) 
-    if request.method == "POST":
-        message = request.form['userMessage']
-        resp = agents.run_allocation_query(message)         # conversationchain is needed
-    return render_template('recommendation.html', task=task, resp=resp)
+    return jsonify({'task': task.content, 'response': resp})
 
+
+@app.route('/post_recommendation', methods=['POST'])
+def post_recommend():
+    data = request.json  # Parse JSON from request
+    message = data.get('userMessage', '')  # Default to an empty string if no message
+    resp = agents.continue_conversation(message)  # Process the user message with conversation chain
+    return jsonify({'response': resp})  # Return JSON response
 
 #Route for Rank Explanation
-@app.route('/explanation/<int:id>', methods=['POST','GET'])
-def explain(id):
+@app.route('/get_explanation/<int:id>', methods=['GET'])
+def get_explain(id):
     task = UpdatedToDo.query.get_or_404(id)
     taskname  = task.content
     taskrank = str(task.rank)
     taskenergyreq = task.energy_required
     userenergy = session.get('energy_level')
     resp = agents.run_explanation_query(taskname,taskrank,taskenergyreq,userenergy) 
-    if request.method == "POST":
-        message = request.form['userMessage']
-        resp = agents.continue_conversation(message)         # conversationchain is needed
-    return render_template('explanation.html', task=task, resp=resp)
+    return jsonify({'task': task.content, 'response': resp})
+
+@app.route('/post_explanation', methods=['POST'])
+def post_explain():
+    data = request.json  # Parse JSON from request
+    message = data.get('userMessage', '')  # Default to an empty string if no message
+    resp = agents.continue_conversation(message)  # Process the user message with conversation chain
+    return jsonify({'response': resp})  # Return JSON response
+
+
+@app.route('/save_feedback', methods=['POST'])
+def downloadjson():
+    data = request.json  # Parse JSON from request
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename_prefix = "feedback"
+    filename = f"{filename_prefix}_{timestamp}.json"
+    try:
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+        # Return the file to the client for download
+        return send_file(filename, as_attachment=True)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
 
 
 # Start the Flask app
