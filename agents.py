@@ -8,10 +8,10 @@ import os
 # Default configurations
 COHERE_API_TOKEN = ''
 
-DeepSeek_API_TOKEN = ''
+# DeepSeek_API_TOKEN = ''
 os.environ['COHERE_API_KEY'] = COHERE_API_TOKEN
 
-os.environ['DeepSeek_API_TOKEN'] = DeepSeek_API_TOKEN
+# os.environ['DeepSeek_API_TOKEN'] = DeepSeek_API_TOKEN
 
 llm = Cohere()
 
