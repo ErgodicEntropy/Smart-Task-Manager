@@ -152,17 +152,7 @@
         <p>Please answer the following questions to help us measure your energy levels.</p>
         <form id="mainForm" action="/data" method="POST">
             <!-- Intellectual/Cognitive Energy: Clarity of Thought, Focus/Attention, Mental Fatigue, Task Readiness, Cognitive Load -->
-            <h5>Intellectual/Cognitive Energy</h5>
-            <h6>Clarity of Thought:</h6> 
-            <label for="clarity"> How clear are your thoughts at this moment?</label>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span style="flex-shrink: 0;">Completely Foggy</span>
-                <input type="range" id="clarity" name="clarity" min="0" max="100" value="50" style="flex-grow: 1;" oninput="updateValue(this.value, 'clarity-value')">
-                <span style="flex-shrink: 0;">Fully Clear</span>
-            </div>
-            <span id="clarity-value">50</span>
-
-            <h6>Focus/Attention:</h6>
+            <h5>Focus:</h5>
             <label for="focus"> How focused do you feel right now?</label>
             <div style="display: flex; align-items: center; gap: 10px;">
                 <span style="flex-shrink: 0;">Completely Disordered</span>
@@ -171,16 +161,7 @@
             </div>
             <span id="focus-value">50</span>
 
-            <h6>Fatigue:</h6>
-            <label for="fatigue">How mentally refreshed do you feel right now?</label>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span style="flex-shrink: 0;">Completely Drained</span>
-                <input type="range" id="fatigue" name="fatigue" min="0" max="100" value="50" style="flex-grow: 1;" oninput="updateValue(this.value, 'fatigue-value')">
-                <span style="flex-shrink: 0;">Very Fresh</span>
-            </div>
-            <span id="fatigue-value">50</span>
-
-            <h6>Task Readiness:</h6>
+            <h6>Readiness:</h6>
             <label for="readiness"> How prepared do you feel to tackle a challenging task right now?</label>
             <div style="display: flex; align-items: center; gap: 10px;">
                 <span style="flex-shrink: 0;">Not Prepared</span>
@@ -189,18 +170,8 @@
             </div>
             <span id="readiness-value">50</span>
 
-            <h6>Cognitive Load:</h6>
-            <label for="load">How lightweight does your current mental workload feel?</label>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span style="flex-shrink: 0;">Overloaded</span>
-                <input type="range" id="load" name="load" min="0" max="100" value="50" style="flex-grow: 1;" oninput="updateValue(this.value, 'load-value')">
-                <span style="flex-shrink: 0;">Lightweight</span>
-            </div>
-            <span id="load-value">50</span>
-
             <!-- Psychological/Mental Energy: Motivation, Stress Level, Emotional State -->
-            <h5>Psychological/Mental Energy</h5>
-            <h6>Motivation:</h6>
+            <h5>Motivation:</h5>
             <label for="motivation"> How willing do you feel to work on something mentally challenging?</label>
             <div style="display: flex; align-items: center; gap: 10px;">
                 <span style="flex-shrink: 0;">Disinterested</span>
@@ -208,19 +179,9 @@
                 <span style="flex-shrink: 0;">Motivated</span>
             </div>
             <span id="motivation-value">50</span>
-        
-            <h6>Stress:</h6>
-            <label for="stress"> How much calm do you feel right now?</label>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span style="flex-shrink: 0;">Chaotic</span>
-                <input type="range" id="stress" name="stress" min="0" max="100" value="50" style="flex-grow: 1;" oninput="updateValue(this.value, 'stress-value')">
-                <span style="flex-shrink: 0;">Very Calm</span>
-            </div>
-            <span id="stress-value">50</span>
-        
+                
             <!-- Physical Energy -->
-            <h5>Physical Energy</h5>
-            <h6>Physical Fatigue:</h6>
+            <h5>Physical Fatigue:</h5>
             <label for="physical_fatigue"> How much physically energized you feel?</label>
             <div style="display: flex; align-items: center; gap: 10px;">
                 <span style="flex-shrink: 0;">Tired</span>
@@ -230,9 +191,8 @@
             <span id="physical_fatigue-value">50</span>
         
             <!-- Temporal Energy: Circadian Rhythm (Peak Times/Cortisol Level), Energy Trends -->
-            <h5>Temporal Energy</h5>
             <!-- Circadian Rhythm (Peak Times/Cortisol Level) -->
-             <h6>Circadian Rhythm:</h6> 
+             <h5>Circadian Rhythm:</h5> 
             <label for="circadian_rhythm">Set your peak hours</label>
             <select id="circadian_rhythm" name="circadian_rhythm">
                 <option value="Early Morning">Early Morning (5AM-9AM)</option>
@@ -242,19 +202,10 @@
                 <option value="Night">Night (8PM-12AM)</option>
                 <option value="Midnight">Midnight (12AM-5AM)</option>
             </select>
-            <!-- Energy Trends -->
-            <h6>Energy Trend:</h6>
-            <label for="trend">How do you feel your energy is changing?</label>
-            <select id="trend" name="trend">
-                <option value="-1">Falling</option>
-                <option value="0">Steady</option>
-                <option value="1">Rising</option>
-            </select>
         
             <!-- Environmental/Social Energy: Social Interaction, External Stimulation -->
-            <h5>Environmental/Social Energy</h5>
             <!-- External Stimulation -->
-            <h6>External Stimulation:</h6>
+            <h5>External Stimulation:</h5>
             <label for="external_stimulation">How supportive does your environment feel to your energy right now?</label>
             <div style="display: flex; align-items: center; gap: 10px;">
                 <span style="flex-shrink: 0;">Very Hostile</span>
@@ -263,27 +214,8 @@
             </div>
             <span id="external_stimulation-value">50</span>
             
-            <!-- Social Interaction -->
-            <h6>Social Interaction:</h6>
-            <label for="interaction_energy">How energized do you feel from social interactions right now?</label>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span style="flex-shrink: 0;">Socially Drained</span>
-                <input type="range" id="interaction_energy" name="interaction_energy" min="0" max="100" value="50" style="flex-grow: 1;" oninput="updateValue(this.value, 'interaction_energy-value')">
-                <span style="flex-shrink: 0;">Socially Stimulated</span>
-            </div>
-            <span id="interaction_energy-value">50</span>
-        
-            <!-- Behavioral Energy -->
-            <h5>Behavioral Energy</h5>
-            <label for="task_initiation">How easy is it for you to start a new task?</label>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span style="flex-shrink: 0;">Very Hard</span>
-                <input type="range" id="task_initiation" name="task_initiation" min="0" max="100" value="50" style="flex-grow: 1;" oninput="updateValue(this.value, 'task_initiation-value')">
-                <span style="flex-shrink: 0;">Very Easy</span>
-            </div>
-            <span id="task_initiation-value">50</span>
             <div class="submitter">
-                <input type="submit" value="Submit" id="submitButton" onclick="callOutput()">
+                <input type="submit" value="Submit">
             </div>
             
         </form>
@@ -336,7 +268,7 @@
                 }).then(response => {
                     if (response.ok) {
                         // Update the loading message
-                        updateLoadingMessage('Almost there! Redirecting...');
+                        updateLoadingMessage('Almost there! Thanks for your patience');
 
                         // Submit the hidden form to /output (POST request)
                         document.getElementById('redirectForm').submit();

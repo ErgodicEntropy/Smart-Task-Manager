@@ -197,19 +197,12 @@ def submit_form():
         currenthour = datetime.today().hour
         day_category = daycategory(currenthour)
         data_list = [
-            float(request.form['clarity']),
             float(request.form['focus']),
-            float(request.form['fatigue']),
             float(request.form['readiness']),
-            float(request.form['load']),
             float(request.form['motivation']),
-            float(request.form['stress']),
             float(request.form['physical_fatigue']),
             daymetric(request.form['circadian_rhythm'], day_category),
-            float(request.form['trend']),
             float(request.form['external_stimulation']),
-            float(request.form['interaction_energy']),
-            float(request.form['task_initiation'])
         ]
         # Energy Scoring Function (Weighted Average)
         N = len(data_list)
@@ -221,6 +214,7 @@ def submit_form():
             weighted_sum += weights[k]*data_list[k]
         
         average_energy = weighted_sum/N
+        print("average user energy:", average_energy)
         #Energy Threshold Function
         # Determine energy level category
         if average_energy >= threshold["extremely high"]:
@@ -325,6 +319,7 @@ def Sort():
             for k in range(K):
                 weighted_sum += weights[k]*energy_dist[energyvals[k]]
             energy_value = weighted_sum/K
+            print("average task energy:", energy_value)
             energytest.append(energy_value)
             #Requirement Threshold Function
             if energy_value >= threshold_dist["extremely high"]:

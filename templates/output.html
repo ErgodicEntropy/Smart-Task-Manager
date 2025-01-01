@@ -523,6 +523,28 @@
                 font-size: 1.2rem;
                 margin-top: 15px;
             }    
+
+            .estimate-energy-button {
+                position: fixed; /* Fix the button to the viewport */
+                bottom: 20px; /* Distance from the bottom */
+                right: 20px; /* Distance from the right */
+                z-index: 1000; /* Ensure it's above other elements */
+            }
+            
+            .estimate-energy-button input[type="submit"] {
+                padding: 8px 16px; /* Smaller padding */
+                font-size: 14px; /* Smaller font size */
+                background-color: #007bff; /* Blue background */
+                color: white; /* White text */
+                border: none; /* Remove border */
+                border-radius: 5px; /* Rounded corners */
+                cursor: pointer; /* Pointer cursor on hover */
+                transition: background-color 0.3s ease; /* Smooth hover effect */
+            }
+            
+            .estimate-energy-button input[type="submit"]:hover {
+                background-color: #0056b3; /* Darker blue on hover */
+            }
         </style>
     
 </head>
@@ -626,6 +648,11 @@
             </div>
             </form>
         </div>
+    </div>
+    <div class="estimate-energy-button">
+        <form action="/finalize_tasks" method="POST">
+            <input type="submit" value="Reassess My Energy">
+        </form>
     </div>
 
     <!-- Kanban Board: implement a timer for the doing board unless the user feedbacks the time required for that task himself -->
@@ -848,7 +875,7 @@
                 console.log('Response:', data.response);
 
                 // Update the loading message
-                updateLoadingMessage('Almost there!');
+                updateLoadingMessage('Almost there! Thanks for your patience.');
 
                 // Append the user's message as a separate div
                 const userMessageDiv = document.createElement("div");
