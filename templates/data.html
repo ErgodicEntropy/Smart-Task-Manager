@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Energy Questionnaire</title>
+    <script src="datascript.js"></script>
     <style>
         body {
             background-color: #1e1e2e; /* Dark theme background */
@@ -74,8 +75,14 @@
         input[type="range"] {
             width: 100%;
         }
-
+        .submitter {
+            align-items: center;
+        }
+        .submitter input[type="submit"] {
+            align-items: center;
+        }
         input[type="submit"] {
+            width: 50%;
             padding: 12px 20px;
             border: none;
             border-radius: 5px;
@@ -83,19 +90,68 @@
             color: #f1f1f1;
             font-size: 1rem;
             cursor: pointer;
+            align-items: center;
             transition: background-color 0.3s ease;
         }
 
         input[type="submit"]:hover {
             background-color: #3a9d40;
         }
+
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1002; /* Ensure it's above other elements */
+            display: none; /* Hidden by default */
+        }
+        
+        #loading-container {
+            text-align: center;
+            background-color: rgba(43, 43, 61, 0.95); /* Semi-transparent dark background */
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        #loading-progress {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #4caf50;
+            border-top: 4px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite; /* Loop animation */
+            margin: 0 auto 15px auto;
+        }
+        
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        #loading-message {
+            color: #f1f1f1;
+            font-size: 1.2rem;
+            margin-top: 15px;
+        }    
+
     </style>
 </head>
 <body>
     <div class="content">
         <h1>Energy Questionnaire</h1>
         <p>Please answer the following questions to help us measure your energy levels.</p>
-        <form id="energyForm" action="/data" method="POST"  onsubmit="return callOutput();">
+        <form id="mainForm" action="/data" method="POST">
             <!-- Intellectual/Cognitive Energy: Clarity of Thought, Focus/Attention, Mental Fatigue, Task Readiness, Cognitive Load -->
             <h5>Intellectual/Cognitive Energy</h5>
             <h6>Clarity of Thought:</h6> 
@@ -227,33 +283,23 @@
                 <span style="flex-shrink: 0;">Very Easy</span>
             </div>
             <span id="task_initiation-value">50</span>
-            <input type="submit" value="Submit">
-
+            <div class="submitter">
+                <input type="submit" value="Submit" id="submitButton" onclick="callOutput()">
+            </div>
+            
         </form>
 
-        <script>
-            function updateValue(value, id){
-                document.getElementById(id).textContent = value;
-            }
-
-            function callOutput() {
-                const form = document.getElementById('energyForm');
-                
-                // Validate form data if necessary
-                // For example, ensure that ranges are filled or other checks are satisfied
-    
-                // Redirect to the '/output' route
-                form.action = "/output";
-                form.method = "POST";
-                
-                // Submit the form
-                form.submit();
-                
-                // Prevent the default behavior of the button
-                return false; // Returning false ensures no default behavior
-            }
-        </script>
-
+        <div id="loading-overlay">
+            <div id="loading-container">
+                <div id="loading-progress"></div>
+                <p id="loading-message"></p>
+            </div>
+        </div>                
+        
+        <form id="redirectForm" action="/output" method="POST">
+            <!-- may need hidden input -->
+            <!-- <input type="hidden" value="True"> -->
+        </form>
     </div>
 </body>
 </html>

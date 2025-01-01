@@ -243,7 +243,7 @@ def submit_form():
         except:
             flash('There was an issue saving the energy level', 'error')
             return redirect('/data')
-
+    
     return render_template('data.html')
 
 # Main route for managing the output
@@ -383,7 +383,7 @@ def Sort():
                 print(f"Error adding task: {e}")
 
     optimal_task_list = UpdatedToDo.query.order_by(UpdatedToDo.date).all() #early comes first
-    return render_template('recomoutput.html', optimal_task_list=optimal_task_list)
+    return render_template('output.html', optimal_task_list=optimal_task_list)
 
 #Route for Energy Allocation Recommendation
 # @app.route('/recommendation/<int:id>', methods=['POST','GET'])
