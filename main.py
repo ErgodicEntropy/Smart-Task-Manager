@@ -187,13 +187,13 @@ def finalize_tasks():
 @app.route('/data', methods=['POST', 'GET'])
 def submit_form():
     if request.method == "POST":
-        threshold ={
-            'extremely low': 0,
-            'low': 1.1879440506810733,
-            'moderate': 2.7561698026964763,
-            'high': 5.017618750479866,
-            'extremely high': 6.343199292229015
-        }
+        threshold = {
+            'extremely low': 0,         
+            'low': 515679215546105,              
+            'moderate': 6.215434751081833,          
+            'high': 7.9489315930642865,               
+            'extremely high': 9.641324    
+            }
         currenthour = datetime.today().hour
         day_category = daycategory(currenthour)
         data_list = [
@@ -319,7 +319,6 @@ def Sort():
             for k in range(K):
                 weighted_sum += weights[k]*energy_dist[energyvals[k]]
             energy_value = weighted_sum/K
-            print("average task energy:", energy_value)
             energytest.append(energy_value)
             #Requirement Threshold Function
             if energy_value >= threshold_dist["extremely high"]:
