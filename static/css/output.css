@@ -1,0 +1,540 @@
+  /* General Reset */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Main Content */
+.content {
+    width: 80%;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: 36px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #007bff;
+    color: #fff;
+    font-weight: bold;
+}
+
+td {
+    background-color: #f9f9f9;
+}
+
+td a {
+    color: #e74c3c;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+td a:hover {
+    text-decoration: underline;
+}
+
+.completed {
+    text-decoration: line-through;
+    background-color: #e0ffe0;
+    color: green;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.finish-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.finish-button:hover {
+    background-color: #45a049;
+}
+
+.task-row {
+    transition: background-color 0.3s ease;
+}
+
+.task-row.finished {
+    background-color: #e0ffe0;
+}
+
+.recommendation {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.recommendation:hover {
+    background-color: #007B9E;
+}
+
+.explain {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.explain:hover {
+    background-color: #007B9E;
+}
+
+/* Overlay */
+#overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Dim the background */
+    z-index: 1000;
+    backdrop-filter: blur(10px) contrast(20%); /* Combine filters */
+}
+
+/* Modal */
+#feedbackModal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60%;
+    height:65%;
+    max-width: 400px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background-color: #fff;
+    padding: 5px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+    display: none;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/* Modal Form Elements */
+#feedbackModal label {
+    display: block;
+    padding:0px;
+    border:0px ;
+    margin: 0px;
+}
+
+#feedbackModal form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#feedbackModal input[type="radio"] {
+    margin: 2px;
+}
+
+#feedbackModal button {
+    display: inline-block;
+    margin: 5px;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+}
+
+#feedbackModal button:hover {
+    background-color: green;
+}
+
+#feedbackModal button:nth-child(2) {
+    background-color: #f44336;
+}
+
+#feedbackModal button:nth-child(2):hover {
+    background-color: #d32f2f;
+}
+
+/*chatbot body from recommmendation html
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #1e1e2e;
+    color:green;
+    font-family: 'Arial', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}*/
+
+/* chatbot css*/
+#chatbot {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 95%;
+    height: 95%;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow-y: auto;
+    background-color: #fff;
+    padding:0px;
+    margin:0px;
+    border:0px;
+    border-radius: 0px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+    display: none;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.chat-container {
+    height: 100%;
+    width: 100%;
+    flex: 1;
+    background-color: #2b2b3d;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+.chatbox {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    background-color: #1c1c28;
+    border-radius: 10px;
+    color: #f1f1f1;
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+
+.message {
+    margin-bottom: 10px;
+}
+
+.bot-message {
+    font-style: italic;
+    font-weight: bold;
+    color: white;
+    background-color: rgba(76, 175, 80, 0.1);
+    border-left: 4px solid #4caf50;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.chat-input input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    margin:2px;
+    border: 3px solid #444;
+    border-radius: 5px;
+    background-color: #1c1c28;
+    color: #f1f1f1;
+    font-size: 1rem;
+    height:100%;
+    width:50%;
+}
+
+.chat-input input[type="text"]:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+div {
+    text-align: center;
+    margin-top: 20px;
+}
+.chat-input button {
+    padding: 10px;
+    border: 1px;
+    margin:1px;
+    background-color: #4caf50;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.chat-input button:hover {
+    background-color: #3a9d40;
+}
+
+div button {
+    padding: 12px 20px;
+    border: 1px;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+div button:hover {
+    background-color: #0056b3;
+}
+
+#chatbot_explainer {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 95%;
+    height: 95%;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow-y: auto;
+    background-color: #fff;
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+    border-radius: 0px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+    display: none;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.chat-container_explainer {
+    height: 100%;
+    width: 100%;
+    flex: 1;
+    background-color: #2b2b3d;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.chatbox_explainer {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    background-color: #1c1c28;
+    border-radius: 10px;
+    color: #f1f1f1;
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+
+.message {
+    margin-bottom: 10px;
+}
+
+.bot-message_explainer {
+    font-style: italic;
+    font-weight: bold;
+    color: white;
+    background-color: rgba(76, 175, 80, 0.1);
+    border-left: 4px solid #4caf50;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.chat-input_explainer input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    margin: 2px;
+    border: 3px solid #444;
+    border-radius: 5px;
+    background-color: #1c1c28;
+    color: #f1f1f1;
+    font-size: 1rem;
+    height: 100%;
+    width: 50%;
+}
+
+.chat-input_explainer input[type="text"]:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+.chat-input_explainer button {
+    padding: 10px;
+    border: 1px;
+    margin: 1px;
+    background-color: #4caf50;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.chat-input_explainer button:hover {
+    background-color: #3a9d40;
+}
+
+#chatbot_explainer div button {
+    padding: 12px 20px;
+    border: 1px;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#chatbot_explainer div button:hover {
+    background-color: #0056b3;
+}
+
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1002; /* Ensure it's above other elements */
+    display: none; /* Hidden by default */
+}
+
+#loading-container {
+    text-align: center;
+    background-color: rgba(43, 43, 61, 0.95); /* Semi-transparent dark background */
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+#loading-progress {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #4caf50;
+    border-top: 4px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite; /* Loop animation */
+    margin: 0 auto 15px auto;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+#loading-message {
+    color: #f1f1f1;
+    font-size: 1.2rem;
+    margin-top: 15px;
+}    
+
+.estimate-energy-button {
+    position: fixed; /* Fix the button to the viewport */
+    bottom: 20px; /* Distance from the bottom */
+    right: 20px; /* Distance from the right */
+    z-index: 1000; /* Ensure it's above other elements */
+}
+
+.estimate-energy-button input[type="submit"] {
+    padding: 8px 16px; /* Smaller padding */
+    font-size: 14px; /* Smaller font size */
+    background-color: #007bff; /* Blue background */
+    color: white; /* White text */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+.estimate-energy-button input[type="submit"]:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
