@@ -1,28 +1,28 @@
 # Smart Task Manager
 
-A task management framework designed to optimize productivity by aligning tasks with energy levels, avoiding **Learned Helplessness**, and building **Failure Tolerance**. This system starts by focusing on small wins, easy-to-complete tasks to accumulate early successes in order to gain momentum (a positive feedback loop), gradually increasing the complexity of tasks while leveraging the psychological principle of **Sunk Gain** to improve resilience, robustness and task performance. Given an energy level E, starting with a task with complexity C (or difficulty D) that requires an energy level E(C) > E, is likely to disrupt the **Power Proces** defined as: having a goal, exerting serious efforts towards that goal and attaining the goal.
+Meet SparkFlow, the friendly task manager designed to help you get things done without feeling overwhelmed. If you have ADHD or just struggle with managing your energy and tasks, SparkFlow is here to make life easier. It focuses on small, doable tasks to help you build momentum and keep going, even when things feel tough.
+## How It Helps:
 
-The framework takes in consideration that the (negative) impact of a loss, as in failing to complete task due to complexity-energy mismatch, is much greater, everything else held equal (ceteris paribus), than the (positive) impact of a gain, as in completing the task (attaining the goal). The power process is therefore not risk-neutral, but risk averse. The framework also takes in consideration the timing or chronological order of both types of these impact e.g. having accumulated initially losses is worse (more negatively impactful) than doing so after accumulating initial gains-- this is very well documented by the Sunk Cost fallacy. The framework also takes in consideration the continuity of either losses or gains (and the feedback loops that arise from them) in that the Power Process dynamics represents a pitchfork bifurcation between either a positive feedback loop of learned helplessness, or a positive feedback loop of learned robustness. 
+1. **Matches Your Energy**: Helps you pick tasks that fit your current energy level, so you don’t burn out.
+2. **Start with Rewards**: It prioritizes tasks that are quick and rewarding to complete given the user's energy. These small wins give you a boost of confidence and motivation.
+3. **Builds Momentum**: Turns small successes into stepping stones for bigger achievements, creates a psychological safety net to reduce the fear of failure and helps you handle tougher tasks later.
+4. **Grows With You**: Gradually helps you take on more challenging tasks as you build confidence, gently nudges you toward slightly more challenging tasks, helping you grow without feeling pressured.
+5. **ADHD-Friendly**: Designed with techniques that work well for people who struggle with focus and energy management.
 
-The frameworks also takes in consideration other effects such as: Planning fallacy, Optimism Bias and Parkinson Law. To deal with them, the system needs to emulate the Pomodoro and Task Unpacking techniques.
+Inspired by *Martin Seligman’s theory on Learned Helplessness*, SparkFlow helps you break the cycle of feeling stuck. It encourages effort and smart task selection to build resilience and keep you moving forward
 
-#### References
-|Concept|Source|
-|-----|-----|
-|Power Process|[Power Process](https://en.wikipedia.org/wiki/Industrial_Society_and_Its_Future)|
-|Prospect Theory|[Prospect Theory](https://en.wikipedia.org/wiki/Prospect_theory)|
-|Sunk Cost Fallacy|[Sunk Cost Fallact](https://en.wikipedia.org/wiki/Sunk_cost)|
-|Learned Helplessness|[Learned Helplessness](https://ppc.sas.upenn.edu/sites/default/files/learnedhelplessness.pdf)|
-|Planning Fallacy|[Planning Fallacy](https://en.wikipedia.org/wiki/Planning_fallacy)|
-|Optimism Bias|[Optimism Bias](https://en.wikipedia.org/wiki/Optimism_bias)|
-|Parkinson Law|[Parkinson Law](https://en.wikipedia.org/wiki/Parkinson%27s_law)|
-|Pomodoro Technique|[Pomodoro Technique](https://en.wikipedia.org/wiki/Pomodoro_Technique)|
-|Unpacking Technique|[Unpacking Technique](https://transformyour.work/aad2d3d202af4fcebd0177d65242f775)|
+## Why SparkFlow?
+Traditional task managers can feel overwhelming, especially if you have ADHD. SparkFlow is different. It breaks things down into tiny, manageable steps so you can start without stress. By focusing on small wins, it helps you build momentum and keeps you moving forward, even on tough days.
+## How It Works:
+SparkFlow makes task management simple and stress-free. Here’s how it helps you stay on track:
+
+1. **Match Your Energy**: SparkFlow suggests tasks that align with your current energy level—whether you’re feeling low, medium, or peak energy. It’s all about efficiency, not just starting easy.
+2. **Feel the Win**: Complete it and feel that sense of accomplishment.
+3. **Build Momentum**: Use that good feeling to tackle the next thing.
+4. **Grow Gradually**: As you gain confidence, take on slightly bigger tasks.
+5. **Keep Flowing**: Keep the progress going, one small step at a time.
+
 ## Mathematical Model (Mathematical Simulation of the Proof-of-Concept)
-
-## How It Works
-
-The system starts by estimating the energy required for a list of tasks and selects the optimal one based on your current energy level. By focusing on tasks that provide early rewards, it helps build a psychological buffer, reducing the impact of future failures and encouraging consistent progress. This approach applies **Martin Seligman’s theory on Learned Helplessness**, aiming to unlearn helplessness through effort and strategic task selection.
 
 ## Product Management
 ### Problem Statement:
