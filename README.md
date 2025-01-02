@@ -1,6 +1,6 @@
-# Smart Task Manager
+# SparkFlow
 
-Meet SparkFlow, the friendly task manager designed to help you get things done without feeling overwhelmed. If you have ADHD or just struggle with managing your energy and tasks, SparkFlow is here to make life easier. It focuses on small, doable tasks to help you build momentum and keep going, even when things feel tough.
+Meet **SparkFlow**, the friendly task manager designed to help you get things done without feeling overwhelmed. If you have ADHD or just struggle with managing your energy and tasks, SparkFlow is here to make life easier. It focuses on small, doable tasks to help you build momentum and keep going, even when things feel tough.
 ## How It Helps:
 
 1. **Matches Your Energy**: Helps you pick tasks that fit your current energy level, so you don’t burn out.
