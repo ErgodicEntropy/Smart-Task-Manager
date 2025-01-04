@@ -66,15 +66,32 @@ def daymetric(peak_daytime,current_daytime):
         return daydist[current_daytime]
     else:
         return 0
-        
+            
+def get_run_count():
+    counter_file = "counter.txt"
+    if os.path.exists(counter_file):  # Check if the file exists
+        with open(counter_file, "r") as f:  # Open the file in read mode
+            count = int(f.read().strip())  # Read the count and convert to integer
+    else:
+        count = 0  # Start from 0 if the file doesn't exist
+    count += 1  # Increment the count
+    with open(counter_file, "w") as f:  # Open the file in write mode
+        f.write(str(count))  # Write the updated count to the file
+    return count
+
+def generate_db_filename():
+    run_count = get_run_count()
+    return f"test{run_count}.db"
+
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)  # Required for using sessions
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 X = os.getcwd()
+db_filename = generate_db_filename()
 
 # Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(X, 'test.db')}"
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(X, db_filename)}"
 db = SQLAlchemy(app)
 
 # Task Object
@@ -102,12 +119,12 @@ class UpdatedToDo(db.Model):
     def __repr__(self):
         return f'<Task {self.id}>'
 
-# Create the database if it doesn't exist
+# Create or clean the database
 def create_db():
-    if not os.path.exists("test.db"):
+    if not os.path.exists(f"{db_filename}"):
         with app.app_context():
             db.create_all()
-        print("Database created!")
+            print("database created!")
 
 create_db()
 
@@ -391,41 +408,63 @@ def Sort():
 
 @app.route('/get_recommendation/<int:id>', methods=['GET'])
 def get_recommend(id):
+    if 'getrecom' in session and 'task_content' in session and session['task_id'] == id:
+        return jsonify({'task': session['task_content'], 'response': session['getrecom']})
+    
     task = UpdatedToDo.query.get_or_404(id)
-    resp = agents.run_allocation_query(task.content) 
+    resp = agents.run_allocation_query(task.content)
+    session['task_id'] = id 
+    session['task_content'] = task.content 
+    session['getrecom'] = resp 
     return jsonify({'task': task.content, 'response': resp})
 
 
 @app.route('/post_recommendation', methods=['POST'])
 def post_recommend():
+    if 'postrecom' in session:
+        return jsonify({'response': session['postrecom']})
+    
     data = request.json  # Parse JSON from request
     message = data.get('userMessage', '')  # Default to an empty string if no message
     resp = agents.continue_conversation(message)  # Process the user message with conversation chain
+    session['recommessage'] = message 
+    session['postrecom'] = resp 
     return jsonify({'response': resp})  # Return JSON response
 
 #Route for Rank Explanation
 @app.route('/get_explanation/<int:id>', methods=['GET'])
 def get_explain(id):
+    if 'getexp' in session and 'task_content_exp' in session and session['task_id_exp'] == id:
+        return jsonify({'task': session['task_content_exp'], 'response': session['getexp']})
+    
     task = UpdatedToDo.query.get_or_404(id)
     taskname  = task.content
     taskrank = str(task.rank)
     taskenergyreq = task.energy_required
     userenergy = session.get('energy_level')
     resp = agents.run_explanation_query(taskname,taskrank,taskenergyreq,userenergy) 
+    session['task_id_exp'] = id 
+    session['task_content_exp'] = task.content 
+    session['getexp'] = resp 
     return jsonify({'task': task.content, 'response': resp})
 
 @app.route('/post_explanation', methods=['POST'])
 def post_explain():
+    if 'postexp' in session:
+        return jsonify({'response': session['postexp']})
+    
     data = request.json  # Parse JSON from request
     message = data.get('userMessage', '')  # Default to an empty string if no message
     resp = agents.continue_conversation(message)  # Process the user message with conversation chain
+    session['expmessage'] = message 
+    session['postexp'] = resp 
     return jsonify({'response': resp})  # Return JSON response
 
 
 @app.route('/save_feedback', methods=['POST'])
 def downloadjson():
     data = request.json  # Parse JSON from request
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename_prefix = "feedback"
     filename = f"{filename_prefix}_{timestamp}.json"
     try:
