@@ -4,14 +4,14 @@ from langchain.chains import ConversationChain, LLMChain
 from langchain.memory import ConversationBufferMemory
 import os
 
+# Safely retrieve the Cohere API key from environment variables
+COHERE_API_TOKEN = os.environ.get('COHERE_API_KEY')
 
-# Default configurations
-COHERE_API_TOKEN = ''
+if not COHERE_API_TOKEN:
+    raise ValueError("Cohere API key is missing. Set the 'COHERE_API_KEY' environment variable.")
 
-os.environ['COHERE_API_KEY'] = COHERE_API_TOKEN
-
-
-llm = Cohere()
+# Initialize the Cohere LLM with the API token
+llm = Cohere(cohere_api_key=COHERE_API_TOKEN)
 
 memory = ConversationBufferMemory(memory_key='history', return_messages=True)
 
