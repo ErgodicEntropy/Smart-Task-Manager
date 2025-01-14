@@ -2,5 +2,5 @@ flask
 flask-sqlalchemy
 gunicorn
 langchain==0.0.184
+cohere
 numpy
-matplotlib
